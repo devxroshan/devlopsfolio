@@ -4,6 +4,9 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 
+// Routes
+import authRoutes from "./modules/auth/auth.routes.js";
+
 dotenv.config();
 
 const app = express();
@@ -21,6 +24,13 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
+app.use("/api/v1/auth", authRoutes);
+
+
+// dev case
+app.get("/", (req: express.Request, res: express.Response) => {
+  res.send("Welcome to the Devlopsfolio API");
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
