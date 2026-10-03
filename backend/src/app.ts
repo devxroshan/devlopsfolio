@@ -7,6 +7,9 @@ import cookieParser from "cookie-parser";
 // Routes
 import authRoutes from "./modules/auth/auth.routes.js";
 
+// Filters
+import { allExceptionFilter } from "./filters/all-exceptions.filter.js";
+
 dotenv.config();
 
 const app = express();
@@ -31,6 +34,8 @@ app.use("/api/v1/auth", authRoutes);
 app.get("/", (req: express.Request, res: express.Response) => {
   res.send("Welcome to the Devlopsfolio API");
 });
+
+app.use(allExceptionFilter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

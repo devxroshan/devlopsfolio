@@ -3,7 +3,14 @@ import express from "express";
 import { asyncRequestHandler } from "../../lib/asyncRequestHandler.js";
 
 
-const signUp = async (req: express.Request, res: express.Response) => {}
+const signUp = async (req: express.Request, res: express.Response) => {
+    const userInfo = req.body;
+    return {
+        ok: true,
+        msg: "User signed up successfully",
+        data: userInfo
+    }
+}
 
 const verifyEmail = async (req: express.Request, res: express.Response) => {}
 

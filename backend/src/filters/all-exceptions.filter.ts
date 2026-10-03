@@ -16,6 +16,7 @@ export const allExceptionFilter = (
   err: any,
   req: express.Request,
   res: express.Response,
+  next: express.NextFunction
 ) => {
   const exception: IException = {
     ok: false,
