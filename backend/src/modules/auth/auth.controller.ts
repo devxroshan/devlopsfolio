@@ -59,19 +59,20 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
 };
 
 const verifyEmail = async (handler: RequestHandlerParams) => {
-  const token = handler.req.query.token as string;
+  const token = handler.req.body.token as string;
 
+  
   if (!token || typeof token != "string") {
     throw new BadRequestException("Token is required.");
   }
-
+  
   const isVerificationSession = await VerificationSession.findOne({
-    id: token,
+    _id: token,
     expires_at: {
       $gt: new Date(),
     },
   });
-
+  
   if (!isVerificationSession) {
     throw new NotFoundException(
       "Verification token session expired. Request new one",
@@ -79,7 +80,7 @@ const verifyEmail = async (handler: RequestHandlerParams) => {
   }
 
   await User.updateOne(
-    { id: isVerificationSession.data },
+    { _id: isVerificationSession.data },
     {
       $set: {
         is_email_verified: true,
@@ -87,7 +88,7 @@ const verifyEmail = async (handler: RequestHandlerParams) => {
     },
   );
 
-  await VerificationSession.deleteOne({ id: token });
+  await VerificationSession.deleteOne({ _id: token });
 
   return {
     ok: true,
@@ -114,7 +115,12 @@ const signIn = async (handler: RequestHandlerParams) => {
     throw new NotFoundException("User not found.");
   }
 
-  const isPassword = await argon2.verify(password, isUser.password);
+  if(!isUser.is_email_verified) {
+    // Send email verification link again
+    throw new BadRequestException("Email is not verified.");
+  }
+
+  const isPassword = await argon2.verify(isUser.password, password);
 
   if (!isPassword) {
     throw new BadRequestException("Wrong password.");
@@ -147,6 +153,12 @@ const forgotPassword = async (handler: RequestHandlerParams) => {
     throw new BadRequestException("Email is required.");
   }
 
+  const isUser = await User.findOne({ email });
+
+  if (!isUser) {
+    throw new NotFoundException("User not found.");
+  }
+
   const verificationTokenExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
   const forgotPasswordSession = await VerificationSession.create({
@@ -177,7 +189,7 @@ const resetPassword = async (handler: RequestHandlerParams) => {
   }
 
   const isVerificationSession = await VerificationSession.findOne({
-    id: token,
+    _id: token,
     expires_at: {
       $gt: new Date(),
     },
@@ -196,7 +208,7 @@ const resetPassword = async (handler: RequestHandlerParams) => {
   const hashedPassword = await argon2.hash(newPassword);
 
   await User.updateOne(
-    { id: isUser.id },
+    { _id: isUser.id },
     {
       $set: {
         password: hashedPassword,
@@ -204,7 +216,7 @@ const resetPassword = async (handler: RequestHandlerParams) => {
     },
   );
 
-  await VerificationSession.deleteOne({ id: token });
+  await VerificationSession.deleteOne({ _id: token });
 
   return {
     ok: true,
