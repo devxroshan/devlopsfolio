@@ -10,10 +10,15 @@ import authRoutes from "./modules/auth/auth.routes.js";
 // Filters
 import { allExceptionFilter } from "./filters/all-exceptions.filter.js";
 
+// db
+import connectDB from "./config/db.js";
+
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+connectDB();
 
 app.use(
   cors({
@@ -28,7 +33,6 @@ app.use(express.json());
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
-
 
 // dev case
 app.get("/", (req: express.Request, res: express.Response) => {

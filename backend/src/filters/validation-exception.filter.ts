@@ -15,6 +15,7 @@ export const handleValidationFilter = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: err.issues.map((issue) => [issue.path.join("."), issue.message]),
+    rawError: err,
   };
 
   res.status(400).json(exception);

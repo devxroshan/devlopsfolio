@@ -1,4 +1,6 @@
 import express from "express";
+import mongoose from "mongoose";
+import { InternalServerException } from "../config/http-exceptions.js";
 
 interface HandlerResponse {
   ok: boolean;
@@ -7,19 +9,35 @@ interface HandlerResponse {
   statusCode?: number;
 }
 
-type AsyncRequestHandler = (
-  req: express.Request,
-  res: express.Response,
-  next?: express.NextFunction
-) => Promise<void | HandlerResponse>;
+export interface RequestHandlerParams {
+  req: express.Request;
+  res: express.Response;
+  next?: express.NextFunction;
+  mongooseSession?: mongoose.ClientSession | undefined;
+}
 
-export const asyncRequestHandler = (handler: AsyncRequestHandler) => {
+type AsyncRequestHandler = (handlerParams: RequestHandlerParams) => Promise<HandlerResponse | void>
+
+type Options = {
+  allowMongooseSession?: boolean;
+};
+
+export const asyncRequestHandler = (
+  handler: AsyncRequestHandler,
+  options: Options = { allowMongooseSession: false },
+) => {
   return async (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
   ) => {
-    handler(req, res, next)
+    let session: mongoose.ClientSession | undefined = undefined;
+
+    if (options.allowMongooseSession) {
+      session = await mongoose.startSession();
+    }
+
+    handler({req, res, mongooseSession: session, next})
       .then((response) => {
         if (res.headersSent) return;
         else if (response !== undefined) {
@@ -37,6 +55,11 @@ export const asyncRequestHandler = (handler: AsyncRequestHandler) => {
       })
       .catch((error) => {
         next(error);
+      })
+      .finally(() => {
+        if (session) {
+          session.endSession();
+        }
       });
   };
 };

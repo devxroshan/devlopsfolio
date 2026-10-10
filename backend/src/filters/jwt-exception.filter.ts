@@ -14,6 +14,7 @@ export const handleJwtExceptionFilter = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: {},
+    rawError: err,
   };
 
   if (err instanceof jwt.JsonWebTokenError) {

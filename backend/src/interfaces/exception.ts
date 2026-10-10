@@ -3,6 +3,7 @@ export interface IException {
   msg: string;
   path: string;
   timestamp: string;
-  details?: any;
+  details: any;
   statusCode?: number;
+  rawError: any;
 }
