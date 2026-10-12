@@ -21,6 +21,7 @@ import {
 // libs
 import { renderTemplate } from "../../lib/renderTemplate.js";
 import { sendEmail } from "../../lib/sendEmail.js";
+import { env } from "../../config/env.js";
 
 const signUp = async (handlerParams: RequestHandlerParams) => {
   const EXPIRY_MINUTES = 5;
@@ -51,7 +52,7 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
     { session: session as mongoose.ClientSession },
   );
 
-  const verificationLink = `${process.env.CORS_ORIGIN}/email-verification?token=${verificationSession?.id}`;
+  const verificationLink = `${env.FRONTEND}/email-verification?token=${verificationSession?.id}`;
 
   const verificationHtml = await renderTemplate("email-verification.html", {
     appName: process.env.APP_NAME as string,
@@ -62,7 +63,7 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
   });
 
   // send email
-  if (process.env.NODE_ENV == "dev") {
+  if (env.isDevelopment) {
     await sendEmail({
       to: newUser?.email as string,
       subject: "Email Verification",
@@ -142,7 +143,7 @@ const signIn = async (handler: RequestHandlerParams) => {
       data: isUser.id,
     });
 
-    const verificationLink = `${process.env.CORS_ORIGIN}/email-verification?token=${verificationSession.id}`;
+    const verificationLink = `${env.FRONTEND}/email-verification?token=${verificationSession.id}`;
 
     const verificationHtml = await renderTemplate("email-verification.html", {
       appName: process.env.APP_NAME as string,
@@ -152,7 +153,7 @@ const signIn = async (handler: RequestHandlerParams) => {
       currentYear: new Date().getFullYear(),
     });
 
-    if (process.env.NODE_ENV == "dev") {
+    if (env.isDevelopment) {
       await sendEmail({
         to: isUser.email,
         subject: "Email Verification",
@@ -213,7 +214,7 @@ const forgotPassword = async (handler: RequestHandlerParams) => {
     data: email,
   });
 
-  const resetUrl = `${process.env.CLIENT_ORIGIN}/reset-password?token=${forgotPasswordSession.id}`;
+  const resetUrl = `${env.FRONTEND}/reset-password?token=${forgotPasswordSession.id}`;
 
   const forgotPasswordHtml = await renderTemplate("forgot-password.html", {
     appName: process.env.APP_NAME as string,
@@ -223,7 +224,7 @@ const forgotPassword = async (handler: RequestHandlerParams) => {
     currentYear: new Date().getFullYear(),
   });
 
-  if (process.env.NODE_ENV === "dev") {
+  if (env.isDevelopment) {
     await sendEmail({
       to: isUser.email,
       subject: "Reset Password",

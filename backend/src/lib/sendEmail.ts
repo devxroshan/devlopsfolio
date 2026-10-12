@@ -21,7 +21,7 @@ export const sendEmail = async ({
   replyTo,
 }: SendEmailOptions): Promise<ISendEmailReturn> => {
   const result = await transporter.sendMail({
-    from: process.env.SMTP_USER,
+    from: process.env.SMTP_USER as string,
     to,
     subject,
     html,

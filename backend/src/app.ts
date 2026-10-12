@@ -1,8 +1,9 @@
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+
+import { checkEnv } from "./config/env.js";
 
 // Routes
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -13,16 +14,16 @@ import { allExceptionFilter } from "./filters/all-exceptions.filter.js";
 // db
 import connectDB from "./config/db.js";
 
-dotenv.config();
+checkEnv();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT as string) || 8000;
 
 connectDB();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: process.env.FRONTEND || "http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   }),
