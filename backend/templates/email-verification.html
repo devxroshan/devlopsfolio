@@ -1,0 +1,131 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>Verify Your Email</title>
+</head>
+
+<body style="margin:0;padding:0;background-color:#f4f7fb;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+    style="background-color:#f4f7fb;padding:40px 16px;">
+    <tr>
+      <td align="center">
+
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+          style="max-width:560px;background-color:#ffffff;border:1px solid #e5eaf2;border-radius:16px;">
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding:32px 28px 20px;">
+              <div style="font-size:24px;font-weight:800;letter-spacing:-0.8px;color:#2563eb;">
+                {{appName}}
+              </div>
+              <p style="margin:8px 0 0;font-size:13px;line-height:20px;color:#8490a3;">
+                One last step to get started
+              </p>
+            </td>
+          </tr>
+
+          <!-- Verification Icon -->
+          <tr>
+            <td align="center" style="padding:12px 28px 8px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="center" valign="middle"
+                    style="width:76px;height:76px;background-color:#eff6ff;border-radius:50%;font-size:34px;color:#2563eb;">
+                    &#9993;
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td align="center" style="padding:20px 32px 12px;">
+              <h1 style="margin:0;font-size:27px;line-height:36px;font-weight:750;letter-spacing:-0.8px;color:#172033;">
+                Verify your email address
+              </h1>
+
+              <p style="margin:18px 0 0;font-size:15px;line-height:26px;color:#5d687b;text-align:center;">
+                Hi {{name}},
+                <br />
+                Thanks for joining {{appName}}! We're excited to have you on board.
+                Please confirm that this email address belongs to you by clicking the button below.
+              </p>
+            </td>
+          </tr>
+
+          <!-- CTA Button -->
+          <tr>
+            <td align="center" style="padding:28px 28px 18px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="center" bgcolor="#2563eb" style="border-radius:9px;">
+                    <a href="{{verificationUrl}}"
+                      target="_blank"
+                      style="display:inline-block;padding:15px 30px;font-size:15px;font-weight:700;line-height:20px;color:#ffffff;text-decoration:none;border-radius:9px;">
+                      Verify Email Address &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Expiry Notice -->
+          <tr>
+            <td align="center" style="padding:0 32px 28px;">
+              <p style="margin:0;font-size:13px;line-height:22px;color:#8490a3;">
+                This verification link expires in
+                <strong style="color:#475569;">{{expiryMinutes}} minutes</strong>.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Fallback Link -->
+          <tr>
+            <td style="padding:24px 32px;background-color:#f8fafc;border-top:1px solid #edf0f5;">
+              <p style="margin:0 0 10px;font-size:13px;line-height:20px;color:#5d687b;">
+                Button not working? Copy and paste this link into your browser:
+              </p>
+
+              <a href="{{verificationUrl}}"
+                target="_blank"
+                style="font-size:13px;line-height:22px;color:#2563eb;text-decoration:underline;word-break:break-all;">
+                {{verificationUrl}}
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding:26px 28px 30px;">
+              <p style="margin:0;font-size:13px;line-height:22px;color:#5d687b;">
+                If you didn't create an account with {{appName}}, you can safely ignore this email.
+              </p>
+
+              <p style="margin:20px 0 0;font-size:13px;line-height:20px;color:#8490a3;">
+                Thanks,<br />
+                The {{appName}} Team
+              </p>
+
+              <p style="margin:20px 0 0;font-size:11px;line-height:18px;color:#a0aabc;">
+                &copy; {{currentYear}} {{appName}}. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
+```

@@ -18,7 +18,13 @@ import {
   NotFoundException,
 } from "../../config/http-exceptions.js";
 
+// libs
+import { renderTemplate } from "../../lib/renderTemplate.js";
+import { sendEmail } from "../../lib/sendEmail.js";
+
 const signUp = async (handlerParams: RequestHandlerParams) => {
+  const EXPIRY_MINUTES = 5;
+
   const userInfo = handlerParams.req.body;
 
   const hashedPassword = await argon2.hash(userInfo.password);
@@ -35,21 +41,34 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
     { session: session as mongoose.ClientSession },
   );
 
-  const verificationTokenExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
-
   const [verificationSession] = await VerificationSession.create(
     [
       {
-        expires_at: verificationTokenExpiresAt,
+        expires_at: new Date(Date.now() + EXPIRY_MINUTES * 60 * 1000),
         data: newUser?.id as string,
       },
     ],
     { session: session as mongoose.ClientSession },
   );
 
-  const verificationTokenLink = `${process.env.CORS_ORIGIN}/email-verification?token=${verificationSession?.id}`;
+  const verificationLink = `${process.env.CORS_ORIGIN}/email-verification?token=${verificationSession?.id}`;
+
+  const verificationHtml = await renderTemplate("email-verification.html", {
+    appName: process.env.APP_NAME as string,
+    name: newUser?.name as string,
+    verificationUrl: verificationLink,
+    expiryMinutes: EXPIRY_MINUTES,
+    currentYear: new Date().getFullYear(),
+  });
 
   // send email
+  if (process.env.NODE_ENV == "dev") {
+    await sendEmail({
+      to: newUser?.email as string,
+      subject: "Email Verification",
+      html: verificationHtml,
+    });
+  }
 
   return {
     ok: true,
@@ -61,18 +80,17 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
 const verifyEmail = async (handler: RequestHandlerParams) => {
   const token = handler.req.body.token as string;
 
-  
   if (!token || typeof token != "string") {
     throw new BadRequestException("Token is required.");
   }
-  
+
   const isVerificationSession = await VerificationSession.findOne({
     _id: token,
     expires_at: {
       $gt: new Date(),
     },
   });
-  
+
   if (!isVerificationSession) {
     throw new NotFoundException(
       "Verification token session expired. Request new one",
@@ -97,6 +115,9 @@ const verifyEmail = async (handler: RequestHandlerParams) => {
 };
 
 const signIn = async (handler: RequestHandlerParams) => {
+  const EXPIRY_MINUTES = 5;
+  const ACESS_TOKEN_EXPIRY_DAY = 30;
+
   const { email, password } = handler.req.query as {
     email: string;
     password: string;
@@ -115,8 +136,30 @@ const signIn = async (handler: RequestHandlerParams) => {
     throw new NotFoundException("User not found.");
   }
 
-  if(!isUser.is_email_verified) {
-    // Send email verification link again
+  if (!isUser.is_email_verified) {
+    const verificationSession = await VerificationSession.create({
+      expires_at: new Date(Date.now() + EXPIRY_MINUTES * 60 * 1000),
+      data: isUser.id,
+    });
+
+    const verificationLink = `${process.env.CORS_ORIGIN}/email-verification?token=${verificationSession.id}`;
+
+    const verificationHtml = await renderTemplate("email-verification.html", {
+      appName: process.env.APP_NAME as string,
+      name: isUser.name,
+      verificationUrl: verificationLink,
+      expiryMinutes: EXPIRY_MINUTES,
+      currentYear: new Date().getFullYear(),
+    });
+
+    if (process.env.NODE_ENV == "dev") {
+      await sendEmail({
+        to: isUser.email,
+        subject: "Email Verification",
+        html: verificationHtml,
+      });
+    }
+
     throw new BadRequestException("Email is not verified.");
   }
 
@@ -137,7 +180,7 @@ const signIn = async (handler: RequestHandlerParams) => {
     .cookie("access-token", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "dev",
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: ACESS_TOKEN_EXPIRY_DAY * 24 * 60 * 60 * 1000,
       sameSite: "lax",
     })
     .json({
@@ -147,6 +190,8 @@ const signIn = async (handler: RequestHandlerParams) => {
 };
 
 const forgotPassword = async (handler: RequestHandlerParams) => {
+  const EXPIRY_MINUTES = 10;
+
   const email = handler.req.query.email as string;
 
   if (!email) {
@@ -159,16 +204,32 @@ const forgotPassword = async (handler: RequestHandlerParams) => {
     throw new NotFoundException("User not found.");
   }
 
-  const verificationTokenExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
+  const verificationTokenExpiresAt = new Date(
+    Date.now() + EXPIRY_MINUTES * 60 * 1000,
+  );
 
   const forgotPasswordSession = await VerificationSession.create({
     expires_at: verificationTokenExpiresAt,
     data: email,
   });
 
-  const forgotPasswordLink = `${process.env.CLIENT_ORIGIN}/reset-password?token=${forgotPasswordSession.id}`;
+  const resetUrl = `${process.env.CLIENT_ORIGIN}/reset-password?token=${forgotPasswordSession.id}`;
 
-  // Send forgot password link vid email
+  const forgotPasswordHtml = await renderTemplate("forgot-password.html", {
+    appName: process.env.APP_NAME as string,
+    name: isUser.name,
+    expiryMinutes: EXPIRY_MINUTES,
+    resetUrl,
+    currentYear: new Date().getFullYear(),
+  });
+
+  if (process.env.NODE_ENV === "dev") {
+    await sendEmail({
+      to: isUser.email,
+      subject: "Reset Password",
+      html: forgotPasswordHtml,
+    });
+  }
 
   return {
     ok: true,
@@ -205,7 +266,7 @@ const resetPassword = async (handler: RequestHandlerParams) => {
     throw new NotFoundException("User not found.");
   }
 
-  const hashedPassword = await argon2.hash(newPassword);
+  const hashedPassword = await argon2.hash(confirmPassword);
 
   await User.updateOne(
     { _id: isUser.id },

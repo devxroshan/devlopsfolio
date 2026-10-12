@@ -12,6 +12,7 @@ import { handleHttpException } from "./http-exception.filter.js";
 import { handleJwtExceptionFilter } from "./jwt-exception.filter.js";
 import { handleValidationFilter } from "./validation-exception.filter.js";
 import { handleMongoDBException } from "./mongodb-exception.filter.js";
+import { logger } from "../lib/logger.js";
 
 export const allExceptionFilter = (
   err: any,
@@ -36,6 +37,9 @@ export const allExceptionFilter = (
   else if (err instanceof mongoose.Error || err instanceof MongoServerError) {
     return handleMongoDBException(err, req, res);
   }
+
+  // for dev
+  logger.error("some unkown error:->", err);
 
   res.status(err.statusCode || 500).json(exception);
 };
