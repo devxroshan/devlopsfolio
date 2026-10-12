@@ -115,6 +115,46 @@ const verifyEmail = async (handler: RequestHandlerParams) => {
   };
 };
 
+const requestNewVerificationSession = async (handler: RequestHandlerParams) => {
+  const EXPIRY_MINUTES = 5;
+
+  const email = handler.req.query.email as string;
+
+  const isUser = await User.findOne({ email });
+
+  if (!isUser) {
+    throw new NotFoundException("User not found.");
+  }
+
+  const newEmailVerificationSession = await VerificationSession.create({
+    expires_at: new Date(Date.now() + EXPIRY_MINUTES * 60 * 1000),
+    data: isUser.id,
+  });
+
+  const verificationLink = `${env.FRONTEND}/email-verification?token=${newEmailVerificationSession.id}`;
+
+  const verificationHtml = await renderTemplate("email-verification.html", {
+    appName: process.env.APP_NAME as string,
+    name: isUser.name as string,
+    verificationUrl: verificationLink,
+    expiryMinutes: EXPIRY_MINUTES,
+    currentYear: new Date().getFullYear(),
+  });
+
+  if (env.isDevelopment) {
+    await sendEmail({
+      to: isUser.email as string,
+      subject: "Email Verification",
+      html: verificationHtml,
+    });
+  }
+
+  return {
+    ok: true,
+    msg: "Check your email for new email verification link.",
+  };
+};
+
 const signIn = async (handler: RequestHandlerParams) => {
   const EXPIRY_MINUTES = 5;
   const ACESS_TOKEN_EXPIRY_DAY = 30;
@@ -291,5 +331,8 @@ export const SignUp = asyncRequestHandler(signUp, {
 });
 export const SignIn = asyncRequestHandler(signIn);
 export const VerifyEmail = asyncRequestHandler(verifyEmail);
+export const RequestNewVerificationSession = asyncRequestHandler(
+  requestNewVerificationSession,
+);
 export const ForgotPassword = asyncRequestHandler(forgotPassword);
 export const ResetPassword = asyncRequestHandler(resetPassword);
