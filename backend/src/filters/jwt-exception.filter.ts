@@ -1,10 +1,10 @@
-import express from "express";
+import express, { raw } from "express";
 import jwt from "jsonwebtoken";
 
 import type { IException } from "../interfaces/exception.js";
 
 export const handleJwtExceptionFilter = (
-  err: any,
+  err: unknown,
   req: express.Request,
   res: express.Response,
 ) => {
@@ -29,11 +29,5 @@ export const handleJwtExceptionFilter = (
     errObj.msg = "Token is not active yet. Please log in again.";
   }
 
-  res.status(401).json({
-    ok: false,
-    msg: errObj.msg,
-    path: errObj.path,
-    timestamp: errObj.timestamp,
-    details: errObj.details ?? {},
-  });
+  res.status(401).json(errObj);
 };

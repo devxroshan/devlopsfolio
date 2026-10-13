@@ -9,12 +9,13 @@ import {
 } from "./skill.controller.js";
 import { editSkillSchema } from "./schema/edit-skill.schema.js";
 import { deleteSkillSchema } from "./schema/delete-skill.schema.js";
+import { isLoggedIn } from "../../middlewares/is-logged-in.js";
 
 const router = express.Router();
 
-router.post("/", schemaValidator({ body: addSkillSchema }), AddSkill);
-router.get("/", GetAllSkill);
-router.patch("/", schemaValidator({ body: editSkillSchema }), EditSkill);
-router.delete("/", schemaValidator({ query: deleteSkillSchema }), DeleteSkill);
+router.post("/",isLoggedIn, schemaValidator({ body: addSkillSchema }), AddSkill);
+router.get("/",isLoggedIn, GetAllSkill);
+router.patch("/",isLoggedIn, schemaValidator({ body: editSkillSchema }), EditSkill);
+router.delete("/",isLoggedIn, schemaValidator({ query: deleteSkillSchema }), DeleteSkill);
 
 export default router;

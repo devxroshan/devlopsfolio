@@ -12,7 +12,7 @@ import { handleHttpException } from "./http-exception.filter.js";
 import { handleJwtExceptionFilter } from "./jwt-exception.filter.js";
 import { handleValidationFilter } from "./validation-exception.filter.js";
 import { handleMongoDBException } from "./mongodb-exception.filter.js";
-import { logger } from "../lib/logger.js";
+import { logger } from "../utils/logger.js";
 
 export const allExceptionFilter = (
   err: any,

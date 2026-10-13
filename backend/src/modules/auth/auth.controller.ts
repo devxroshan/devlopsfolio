@@ -2,12 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import z from "zod";
 
-import { asyncRequestHandler } from "../../lib/asyncRequestHandler.js";
+import { asyncRequestHandler } from "../../utils/asyncRequestHandler.js";
 
 // types
-import type { RequestHandlerParams } from "../../lib/asyncRequestHandler.js";
+import type { RequestHandlerParams } from "../../utils/asyncRequestHandler.js";
 import type { IDeveloperProfile } from "../../models/developer-profile.model.js";
 
 // Models
@@ -22,9 +21,10 @@ import {
 } from "../../config/http-exceptions.js";
 
 // libs
-import { renderTemplate } from "../../lib/renderTemplate.js";
-import { sendEmail } from "../../lib/sendEmail.js";
+import { renderTemplate } from "../../utils/renderTemplate.js";
+import { sendEmail } from "../../utils/sendEmail.js";
 import { env } from "../../config/env.js";
+import { APP_CONSTANTS } from "../../config/constants.js";
 
 
 const signUp = async (handlerParams: RequestHandlerParams) => {
@@ -233,9 +233,9 @@ const signIn = async (handler: RequestHandlerParams) => {
 
   handler.res
     .status(200)
-    .cookie("access-token", accessToken, {
+    .cookie(APP_CONSTANTS.AUTH_COOKIE_NAME, accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV !== "dev",
+      secure: !env.isDevelopment,
       maxAge: ACESS_TOKEN_EXPIRY_DAY * 24 * 60 * 60 * 1000,
       sameSite: "lax",
     })

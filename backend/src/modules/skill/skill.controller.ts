@@ -4,7 +4,7 @@ import express from "express";
 import {
   asyncRequestHandler,
   type RequestHandlerParams,
-} from "../../lib/asyncRequestHandler.js";
+} from "../../utils/asyncRequestHandler.js";
 import { Skill, type ISkill } from "../../models/skill.model.js";
 import { NotFoundException } from "../../config/http-exceptions.js";
 

@@ -9,6 +9,3 @@ export interface IAuthenticatedDeveloperProfile extends IDeveloperProfile {
   _id: string;
   user_id: string;
 }
-
-export type IAuthenticated = IAuthenticatedUser &
-  Omit<IAuthenticatedDeveloperProfile, "_id">;
