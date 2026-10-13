@@ -10,7 +10,7 @@ export interface IUser {
   is_client: boolean;
 }
 
-interface IUserSchema extends IUser, Document {}
+export interface IUserSchema extends IUser, Document {}
 
 const userSchema = new Schema<IUserSchema>(
   {

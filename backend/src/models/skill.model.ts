@@ -1,19 +1,28 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 enum ELevel {
-  ADVANCE,
-  INTERMEDIATE,
-  BEGINNER,
+  ADVANCE = "Advance",
+  INTERMEDIATE = "Intermediate",
+  BEGINNER = "beginner",
 }
 
-interface ISkill extends Document {
+export interface ISkill {
   name: string;
   experience_year: number;
   proficiency_level: string;
 }
 
-const skillSchema = new Schema<ISkill>(
+export interface ISkillSchema extends ISkill, Document {
+  user_id: mongoose.Types.ObjectId;
+}
+
+const skillSchema = new Schema<ISkillSchema>(
   {
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -31,4 +40,4 @@ const skillSchema = new Schema<ISkill>(
   { timestamps: true },
 );
 
-export const Skill = mongoose.model<ISkill>("Skill", skillSchema);
+export const Skill = mongoose.model<ISkillSchema>("Skill", skillSchema);
