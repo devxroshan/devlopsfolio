@@ -9,7 +9,7 @@ enum ELevel {
 interface ISkill extends Document {
   name: string;
   experience_year: number;
-  level: string;
+  proficiency_level: string;
 }
 
 const skillSchema = new Schema<ISkill>(
@@ -22,7 +22,7 @@ const skillSchema = new Schema<ISkill>(
       type: Number,
       required: true,
     },
-    level: {
+    proficiency_level: {
       type: String,
       required: true,
       enum: ELevel,

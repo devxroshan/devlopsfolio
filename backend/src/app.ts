@@ -7,6 +7,7 @@ import { checkEnv } from "./config/env.js";
 
 // Routes
 import authRoutes from "./modules/auth/auth.routes.js";
+import projectRoutes from "./modules/project/project.routes.js";
 
 // Filters
 import { allExceptionFilter } from "./filters/all-exceptions.filter.js";
@@ -34,6 +35,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/project", projectRoutes);
 
 // dev case
 app.get("/", (req: express.Request, res: express.Response) => {

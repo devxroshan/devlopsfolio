@@ -2,15 +2,18 @@ import express from "express";
 import mongoose from "mongoose";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import z from "zod";
 
 import { asyncRequestHandler } from "../../lib/asyncRequestHandler.js";
 
 // types
 import type { RequestHandlerParams } from "../../lib/asyncRequestHandler.js";
+import type { IDeveloperProfile } from "../../models/developer-profile.model.js";
 
 // Models
-import { User } from "../../models/user.model.js";
+import { User, type IUser } from "../../models/user.model.js";
 import { VerificationSession } from "../../models/verification-session.model.js";
+import { DeveloperProfile } from "../../models/developer-profile.model.js";
 
 // errors
 import {
@@ -23,10 +26,13 @@ import { renderTemplate } from "../../lib/renderTemplate.js";
 import { sendEmail } from "../../lib/sendEmail.js";
 import { env } from "../../config/env.js";
 
+
 const signUp = async (handlerParams: RequestHandlerParams) => {
+  type UserDeveloperInfo = IUser & IDeveloperProfile;
+
   const EXPIRY_MINUTES = 5;
 
-  const userInfo = handlerParams.req.body;
+  const userInfo: UserDeveloperInfo | IUser = handlerParams.req.body;
 
   const hashedPassword = await argon2.hash(userInfo.password);
 
@@ -35,7 +41,7 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
   const [newUser] = await User.create(
     [
       {
-        ...userInfo,
+        ...(userInfo as IUser),
         password: hashedPassword,
       },
     ],
@@ -51,6 +57,13 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
     ],
     { session: session as mongoose.ClientSession },
   );
+
+  if (!userInfo.is_client) {
+    await DeveloperProfile.create({
+      user_id: newUser?.id as string,
+      ...(userInfo as IDeveloperProfile),
+    });
+  }
 
   const verificationLink = `${env.FRONTEND}/email-verification?token=${verificationSession?.id}`;
 
@@ -71,10 +84,12 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
     });
   }
 
+  const { password: _omit, ...safeUser } = newUser!.toObject();
+
   return {
     ok: true,
     msg: "Sign up successfully. Check your email for email verification link.",
-    data: newUser,
+    data: safeUser,
   };
 };
 

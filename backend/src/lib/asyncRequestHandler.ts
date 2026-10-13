@@ -16,7 +16,9 @@ export interface RequestHandlerParams {
   mongooseSession?: mongoose.ClientSession | undefined;
 }
 
-type AsyncRequestHandler = (handlerParams: RequestHandlerParams) => Promise<HandlerResponse | void>
+type AsyncRequestHandler = (
+  handlerParams: RequestHandlerParams,
+) => Promise<HandlerResponse | void>;
 
 type Options = {
   allowMongooseSession?: boolean;
@@ -37,7 +39,7 @@ export const asyncRequestHandler = (
       session = await mongoose.startSession();
     }
 
-    handler({req, res, mongooseSession: session, next})
+    handler({ req, res, mongooseSession: session, next })
       .then((response) => {
         if (res.headersSent) return;
         else if (response !== undefined) {
@@ -54,6 +56,9 @@ export const asyncRequestHandler = (
         }
       })
       .catch((error) => {
+        if (session?.inTransaction()) {
+          session.abortTransaction();
+        }
         next(error);
       })
       .finally(() => {

@@ -1,8 +1,11 @@
 import z from "zod";
 
-export const signUpSchema = z.object({
+import { developerProfileSchema } from "./developer-profile.schema.js";
+
+const baseSignUpSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email("Invalid email address"),
+  company: z.string("Must be string"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters long")
@@ -11,3 +14,15 @@ export const signUpSchema = z.object({
     .regex(/(?=.*\d)/, "Password must contain a number")
     .regex(/(?=.*[^A-Za-z0-9])/, "Password must contain a special character"),
 });
+
+export const signUpSchema = z.discriminatedUnion("is_client", [
+  baseSignUpSchema.extend({
+    is_client: z.literal(true),
+  }),
+
+  baseSignUpSchema
+    .extend({
+      is_client: z.literal(false),
+    })
+    .extend(developerProfileSchema.shape),
+]);
