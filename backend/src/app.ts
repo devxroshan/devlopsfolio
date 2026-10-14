@@ -7,7 +7,7 @@ import { checkEnv } from "./config/env.js";
 
 // Routes
 import authRoutes from "./modules/auth/auth.routes.js";
-import projectRoutes from "./modules/project/project.routes.js";
+import developerProjectRoutes from "./modules/developer-project/developer-project.routes.js";
 import skillRoutes from "./modules/skill/skill.routes.js";
 
 // Filters
@@ -36,7 +36,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/project", projectRoutes);
+app.use("/api/v1/developer-project", developerProjectRoutes);
 app.use("/api/v1/skill", skillRoutes);
 
 // dev case

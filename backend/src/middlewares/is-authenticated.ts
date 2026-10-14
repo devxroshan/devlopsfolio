@@ -11,7 +11,7 @@ import { env } from "../config/env.js";
 import { User } from "../models/user.model.js";
 import type { IAuthenticatedUser } from "../interfaces/authenticated.js";
 
-export const isLoggedIn = async (
+export const isAuthenticated = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
