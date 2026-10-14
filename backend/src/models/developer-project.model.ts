@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IProject extends Document {
+export interface IDeveloperProject {
   title: string;
   role: string[];
   description: string;
@@ -8,11 +8,18 @@ export interface IProject extends Document {
   outcome_or_metrics: string;
   live: string;
   github: string;
-  status: "active" | "inactive"
 }
 
-const projectSchema = new Schema<IProject>(
+export interface IDeveloperProjectSchema extends IDeveloperProject, Document {
+  user_id: mongoose.Types.ObjectId;
+}
+
+const developerProjectSchema = new Schema<IDeveloperProjectSchema>(
   {
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -31,18 +38,17 @@ const projectSchema = new Schema<IProject>(
     },
     live: {
       type: String,
-      default: "",
+      required: true,
     },
     github: {
       type: String,
       default: "",
     },
-    status: {
-      type: String,
-      default: "inactive"
-    }
   },
   { timestamps: true },
 );
 
-export const Project = mongoose.model<IProject>("Project", projectSchema);
+export const DeveloperProject = mongoose.model<IDeveloperProjectSchema>(
+  "DeveloperProject",
+  developerProjectSchema,
+);

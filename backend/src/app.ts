@@ -15,6 +15,8 @@ import { allExceptionFilter } from "./filters/all-exceptions.filter.js";
 
 // db
 import connectDB from "./config/db.js";
+import { isAuthenticated } from "./middlewares/is-authenticated.js";
+import { isAuthorized } from "./middlewares/is-authorized.js";
 
 checkEnv();
 
@@ -36,8 +38,18 @@ app.use(express.json());
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/developer-project", developerProjectRoutes);
-app.use("/api/v1/skill", skillRoutes);
+app.use(
+  "/api/v1/developer-project",
+  isAuthenticated,
+  isAuthorized({ for_client: false }),
+  developerProjectRoutes,
+);
+app.use(
+  "/api/v1/skill",
+  isAuthenticated,
+  isAuthorized({ for_client: false }),
+  skillRoutes,
+);
 
 // dev case
 app.get("/", (req: express.Request, res: express.Response) => {
