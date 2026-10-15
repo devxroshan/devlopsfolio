@@ -12,7 +12,7 @@ export interface IDeveloperProfile {
   experience_years: number;
   location: string;
   time_zone: string;
-  primary_category: string;
+  title: string;
   discipline: string;
   bio: string;
 }
@@ -34,7 +34,7 @@ const developerProfileSchema = new Schema<IDeveloperProfileSchema>(
     experience_years: { type: Number, required: true },
     location: { type: String, required: true },
     time_zone: { type: String, required: true },
-    primary_category: { type: String, required: true },
+    title: { type: String, required: true },
     discipline: { type: String, required: true },
     bio: { type: String, default: "" },
     rating: { type: Number, default: 0 },

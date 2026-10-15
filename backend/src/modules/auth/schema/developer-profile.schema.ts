@@ -8,6 +8,6 @@ export const developerProfileSchema = z.object({
   experience_years: z.number(),
   location: z.string(),
   time_zone: z.string(),
-  primary_category: z.string(),
+  title: z.string(),
   discipline: z.string(),
 });
