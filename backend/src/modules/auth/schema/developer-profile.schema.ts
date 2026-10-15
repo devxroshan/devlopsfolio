@@ -10,6 +10,4 @@ export const developerProfileSchema = z.object({
   time_zone: z.string(),
   primary_category: z.string(),
   discipline: z.string(),
-  bio: z.string(),
-  rating: z.number().min(0).max(5),
 });

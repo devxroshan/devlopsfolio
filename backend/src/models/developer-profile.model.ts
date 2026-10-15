@@ -15,16 +15,20 @@ export interface IDeveloperProfile {
   primary_category: string;
   discipline: string;
   bio: string;
-  rating: number;
 }
 
 export interface IDeveloperProfileSchema extends IDeveloperProfile, Document {
-    user_id: mongoose.Types.ObjectId;
+  user_id: mongoose.Types.ObjectId;
+  rating: number;
 }
 
 const developerProfileSchema = new Schema<IDeveloperProfileSchema>(
   {
-    user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     hourly_rate_rupees: { type: Number, required: true },
     availability: { type: String, enum: EAvailability, required: true },
     experience_years: { type: Number, required: true },
@@ -32,8 +36,8 @@ const developerProfileSchema = new Schema<IDeveloperProfileSchema>(
     time_zone: { type: String, required: true },
     primary_category: { type: String, required: true },
     discipline: { type: String, required: true },
-    bio: { type: String, required: true },
-    rating: { type: Number, required: true },
+    bio: { type: String, default: "" },
+    rating: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
