@@ -26,7 +26,6 @@ import { sendEmail } from "../../utils/sendEmail.js";
 import { env } from "../../config/env.js";
 import { APP_CONSTANTS } from "../../config/constants.js";
 
-
 const signUp = async (handlerParams: RequestHandlerParams) => {
   type UserDeveloperInfo = IUser & IDeveloperProfile;
 
@@ -113,20 +112,26 @@ const verifyEmail = async (handler: RequestHandlerParams) => {
     );
   }
 
-  await User.updateOne(
-    { _id: isVerificationSession.data },
+  const user = await User.findByIdAndUpdate(
+    isVerificationSession.data,
     {
       $set: {
         is_email_verified: true,
       },
     },
+    { new: true },
   );
+
+  if (!user) {
+    throw new NotFoundException("User not found.");
+  }
 
   await VerificationSession.deleteOne({ _id: token });
 
   return {
     ok: true,
     msg: "Email verified successfully.",
+    data: user,
   };
 };
 
