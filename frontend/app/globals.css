@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 @theme inline {
   --color-canvas: #000000;
   --color-surface-subtle: #0a0a0a;
@@ -20,8 +19,30 @@
   --font-geist-sans: var(--font-geist-sans);
 }
 
-
 body {
   background: #000000;
   color: white;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3a #0a0a0a;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #555555;
 }

@@ -87,14 +87,13 @@ const developerDefaults = {
 
 const SignUp = ({
   setCurrentTab,
+  userInfo,
+  setUserInfo,
 }: {
   setCurrentTab: Dispatch<React.SetStateAction<ETabs>>;
+  userInfo: SignUpInfo;
+  setUserInfo: Dispatch<React.SetStateAction<SignUpInfo>>;
 }) => {
-  const [userInfo, setUserInfo] = useState<SignUpInfo>({
-    ...userDefaults,
-    ...developerDefaults,
-  });
-
   const handlerSignUp = () => {
     console.log(userInfo);
   };
@@ -102,11 +101,11 @@ const SignUp = ({
   return (
     <>
       <div
-        className="w-lg h-fit rounded-2xl bg-surface-subtle border border-border-subtle py-3 px-4 flex flex-col items-center justify-start gap-3"
+        className="w-lg h-fit rounded-2xl bg-surface-subtle border border-border-subtle py-5 px-7 flex flex-col items-center justify-start gap-3"
         onKeyDown={() => handlerSignUp()}
       >
         <div className="w-full h-fit flex flex-col items-start justify-center gap-0.5">
-          <span className="text-xl font-semibold">Create Account</span>
+          <span className="text-2xl font-semibold">Create Account</span>
           <span className="text-xs text-text-dimmed">
             Join DevMatch as an enterprise client or vetted software engineer.
           </span>
@@ -217,21 +216,60 @@ const SignUp = ({
                     label="Discipline"
                     hint="e.g Full-stack Development"
                     options={[
-                      { label: "Frontend Development", value: "Frontend Development" },
-                      { label: "Backend Development", value: "Backend Development" },
-                      { label: "Full-stack Development", value: "Full-stack Development" },
-                      { label: "Mobile App Development", value: "Mobile App Development" },
+                      {
+                        label: "Frontend Development",
+                        value: "Frontend Development",
+                      },
+                      {
+                        label: "Backend Development",
+                        value: "Backend Development",
+                      },
+                      {
+                        label: "Full-stack Development",
+                        value: "Full-stack Development",
+                      },
+                      {
+                        label: "Mobile App Development",
+                        value: "Mobile App Development",
+                      },
                       { label: "Game Development", value: "Game Development" },
-                      { label: "DevOps & Site Reliability Engineering", value: "DevOps & Site Reliability Engineering" },
-                      { label: "Cloud Engineering", value: "Cloud Engineering" },
+                      {
+                        label: "DevOps & Site Reliability Engineering",
+                        value: "DevOps & Site Reliability Engineering",
+                      },
+                      {
+                        label: "Cloud Engineering",
+                        value: "Cloud Engineering",
+                      },
                       { label: "Data Engineering", value: "Data Engineering" },
-                      { label: "AI & Machine Learning Engineering", value: "AI & Machine Learning Engineering" },
-                      { label: "Cybersecurity Engineering", value: "Cybersecurity Engineering" },
-                      { label: "Software Testing & Quality Assurance", value: "Software Testing & Quality Assurance" },
-                      { label: "Embedded Systems Engineering", value: "Embedded Systems Engineering" },
-                      { label: "Database Engineering", value: "Database Engineering" },
-                      { label: "Platform Engineering", value: "Platform Engineering" },
-                      { label: "Blockchain Development", value: "Blockchain Development" },
+                      {
+                        label: "AI & Machine Learning Engineering",
+                        value: "AI & Machine Learning Engineering",
+                      },
+                      {
+                        label: "Cybersecurity Engineering",
+                        value: "Cybersecurity Engineering",
+                      },
+                      {
+                        label: "Software Testing & Quality Assurance",
+                        value: "Software Testing & Quality Assurance",
+                      },
+                      {
+                        label: "Embedded Systems Engineering",
+                        value: "Embedded Systems Engineering",
+                      },
+                      {
+                        label: "Database Engineering",
+                        value: "Database Engineering",
+                      },
+                      {
+                        label: "Platform Engineering",
+                        value: "Platform Engineering",
+                      },
+                      {
+                        label: "Blockchain Development",
+                        value: "Blockchain Development",
+                      },
                     ]}
                     onChange={(e) => {
                       setUserInfo({ ...userInfo, discipline: e.target.value });
@@ -323,7 +361,19 @@ const SignUp = ({
           onClick={() => handlerSignUp()}
         />
 
-        <div className="w-[70%] h-fit border-t text-text-secondary border-border-subtle py-4 flex items-center justify-center text-sm mt-4">
+        <div className="w-full h-fit text-text-secondary py-4 flex flex-col items-center justify-center text-sm gap-5">
+          <div className="w-[70%] flex items-center justify-between gap-1">
+            <div className="flex-1 border-t border-border-subtle" />
+            <span className="whitespace-nowrap px-2 text-xs font-medium text-text-dimmed">
+              CONTINUE WITH
+            </span>
+            <div className="flex-1 border-t border-border-subtle" />
+          </div>
+
+          <Button variant="secondary" btnText="Continue With Google" />
+        </div>
+
+        <div className="w-[70%] h-fit border-t text-text-secondary border-border-subtle py-4 flex items-center justify-center text-sm">
           <span className="text-text-dimmed">Already have an account?</span>
           <button
             className="cursor-pointer hover:underline"
@@ -337,8 +387,99 @@ const SignUp = ({
   );
 };
 
-const SignIn = () => {
-  return <></>;
+const SignIn = ({
+  userInfo,
+  setUserInfo,
+  setCurrentTab,
+}: {
+  setUserInfo: Dispatch<React.SetStateAction<SignUpInfo>>;
+  userInfo: SignUpInfo;
+  setCurrentTab: Dispatch<React.SetStateAction<ETabs>>;
+}) => {
+  const handlerSignIn = () => {
+    console.log(userInfo);
+  };
+
+  return (
+    <>
+      <div
+        className="w-md h-fit rounded-2xl bg-surface-subtle border border-border-subtle py-6 px-8 flex flex-col items-center justify-start gap-5"
+        onKeyDown={() => handlerSignIn()}
+      >
+        <div className="w-full h-fit flex flex-col items-start justify-center gap-0.5">
+          <span className="text-2xl font-semibold">Welcome back</span>
+          <span className="text-xs text-text-dimmed">
+            Sign in to access your talent workspace and project matches.
+          </span>
+        </div>
+
+        <div className="w-full h-fit flex flex-col items-center justify-start gap-2">
+          <Input
+            variant="primary"
+            label="Email Address"
+            hint="e.g name@Company.com"
+            leadingIcon={Mail}
+            onChange={(e) => {
+              setUserInfo({
+                ...userInfo,
+                email: e.target.value,
+              });
+            }}
+          />
+          <Input
+            variant="password"
+            label="Password"
+            hint="••••••••••••••••"
+            leadingIcon={Key}
+            onChange={(e) => {
+              setUserInfo({
+                ...userInfo,
+                password: e.target.value,
+              });
+            }}
+          />
+
+          <Button
+            variant="transparent"
+            btnText="Forgot Password?"
+            className="text-xs ml-auto"
+            textColor="text-text-dimmed"
+            hoverTextColor="text-text-primary"
+            onClick={() => setCurrentTab(ETabs.FORGOT_PASSWORD)}
+          />
+        </div>
+
+        <Button
+          variant="primary"
+          btnText="Sign in to Account"
+          trailingIcon={ArrowRight}
+          onClick={() => handlerSignIn()}
+        />
+
+        <div className="w-full h-fit text-text-secondary py-4 flex flex-col items-center justify-center text-sm gap-5">
+          <div className="w-[70%] flex items-center justify-between gap-1">
+            <div className="flex-1 border-t border-border-subtle" />
+            <span className="whitespace-nowrap px-2 text-xs font-medium text-text-dimmed">
+              CONTINUE WITH
+            </span>
+            <div className="flex-1 border-t border-border-subtle" />
+          </div>
+
+          <Button variant="secondary" btnText="Continue With Google" />
+        </div>
+
+        <div className="w-[70%] h-fit border-t text-text-secondary border-border-subtle py-4 flex items-center justify-center text-sm">
+          <span className="text-text-dimmed">Don't have an account?</span>
+          <button
+            className="cursor-pointer hover:underline"
+            onClick={() => setCurrentTab(ETabs.SIGN_UP)}
+          >
+            Sign Up
+          </button>
+        </div>
+      </div>
+    </>
+  );
 };
 
 const ForgotPassword = () => {
@@ -357,6 +498,10 @@ const AuthContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const [userInfo, setUserInfo] = useState<SignUpInfo>({
+    ...userDefaults,
+    ...developerDefaults,
+  });
   const [currentTab, setCurrentTab] = useState<ETabs>(
     (searchParams.get("tab") as ETabs) ?? ETabs.SIGN_UP,
   );
@@ -400,9 +545,19 @@ const AuthContent = () => {
 
       <div className="w-full h-full flex items-center justify-center mt-20 mb-15">
         {currentTab == ETabs.SIGN_UP && (
-          <SignUp setCurrentTab={setCurrentTab} />
+          <SignUp
+            setCurrentTab={setCurrentTab}
+            userInfo={userInfo}
+            setUserInfo={setUserInfo}
+          />
         )}
-        {currentTab == ETabs.SIGN_IN && <SignIn />}
+        {currentTab == ETabs.SIGN_IN && (
+          <SignIn
+            setCurrentTab={setCurrentTab}
+            setUserInfo={setUserInfo}
+            userInfo={userInfo}
+          />
+        )}
         {currentTab == ETabs.FORGOT_PASSWORD && <ForgotPassword />}
         {currentTab == ETabs.RESET_PASSWORD && <ResetPassword />}
         {currentTab == ETabs.VERIFICATION && <Verification />}

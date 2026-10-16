@@ -33,22 +33,22 @@ const Input = ({
       {variant == "primary" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center"
+          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary">{label}</span>
-            {error && <span className="text-xs text-red-700"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
+            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
           </div>
-          <div className="w-full h-8 rounded-lg border border-border-subtle flex items-center justify-start bg-surface-subtle py-1 px-2">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed" />}
+          <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
+            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
             <input
               id={label}
               type="text"
-              className="outline-none border-none px-2 w-full text-text-primary text-xs"
+              className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs transition-all duration-300"
               placeholder={hint}
               onChange={onChange}
             />
-            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed" />}
+            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />}
           </div>
         </label>
       )}
@@ -56,22 +56,22 @@ const Input = ({
       {variant == "number" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center"
+          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary">{label}</span>
-            {error && <span className="text-xs text-red-700"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
+            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
           </div>
-          <div className="w-full h-8 rounded-lg border border-border-subtle flex items-center justify-start bg-surface-subtle py-1 px-2">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed" />}
+          <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
+            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
             <input
               id={label}
               type="number"
-              className="outline-none border-none px-2 w-full text-text-primary text-xs"
+              className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs transition-all duration-300"
               placeholder={hint}
               onChange={onChange}
             />
-            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed" />}
+            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />}
           </div>
         </label>
       )}
@@ -79,29 +79,29 @@ const Input = ({
       {variant == "password" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center"
+          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary">{label}</span>
-            {error && <span className="text-xs text-red-700"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
+            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
           </div>
-          <div className="w-full h-8 rounded-lg border border-border-subtle flex items-center justify-start bg-surface-subtle py-1 px-2">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed" />}
+          <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
+            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
             <input
               id={label}
               type={showPassword ? "text" : "password"}
-              className="outline-none border-none px-2 w-full text-text-primary text-xs"
+              className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs transition-all duration-300"
               placeholder={hint}
               onChange={onChange}
             />
             {showPassword ? (
               <Eye
-                className="w-5 text-text-dimmed cursor-pointer"
+                className="w-5 text-text-dimmed cursor-pointer transition-all duration-300"
                 onClick={() => setShowPassword(false)}
               />
             ) : (
               <EyeClosed
-                className="w-5 text-text-dimmed cursor-pointer"
+                className="w-5 text-text-dimmed cursor-pointer transition-all duration-300"
                 onClick={() => setShowPassword(true)}
               />
             )}
@@ -112,17 +112,17 @@ const Input = ({
       {variant == "select" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center"
+          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary">{label}</span>
-            {error && <span className="text-xs text-red-700"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
+            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
           </div>
-          <div className="w-full h-8 rounded-lg border border-border-subtle flex items-center justify-start bg-surface-subtle py-1 px-2">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed" />}
+          <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
+            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
             <select
               id={label}
-              className="outline-none border-none px-2 w-full text-text-primary text-xs bg-surface-subtle"
+              className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs bg-surface-subtle transition-all duration-300"
               onChange={onChange}
               defaultValue=""
             >
@@ -135,7 +135,7 @@ const Input = ({
                 </option>
               ))}
             </select>
-            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed" />}
+            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />}
           </div>
         </label>
       )}
