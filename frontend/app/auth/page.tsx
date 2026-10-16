@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,6 +11,8 @@ import {
   BriefcaseIcon,
   Clock,
   LocateIcon,
+  VerifiedIcon,
+  LockIcon,
 } from "lucide-react";
 import React, { Dispatch, Suspense } from "react";
 import { useEffect, useState } from "react";
@@ -51,6 +54,7 @@ interface IUser {
   name: string;
   email: string;
   password: string;
+  is_email_verified: boolean;
   is_client: boolean;
   company: string;
 }
@@ -71,6 +75,7 @@ const userDefaults = {
   name: "",
   email: "",
   password: "",
+  is_email_verified: false,
   is_client: true,
   company: "",
 };
@@ -548,12 +553,203 @@ const ForgotPassword = ({
   );
 };
 
-const ResetPassword = () => {
-  return <></>;
+const ResetPassword = ({
+  setCurrentTab,
+}: {
+  setCurrentTab: Dispatch<React.SetStateAction<ETabs>>;
+}) => {
+  const [resetPasswordInfo, setResetPasswordInfo] = useState<{
+    newPassword: string;
+    confirmPassword: string;
+  }>({ newPassword: "", confirmPassword: "" });
+
+  return (
+    <>
+      <div className="w-md h-fit px-6 py-6 rounded-2xl border border-border-subtle bg-surface-subtle flex flex-col items-center justify-center gap-4 select-none">
+        <div className="w-full flex items-center justify-start">
+          <div className="bg-surface-elevated border border-border-subtle rounded-xl w-10 h-10 flex items-center justify-center">
+            <VerifiedIcon className="w-5 text-text-secondary" />
+          </div>
+        </div>
+
+        <div className="w-full flex flex-col gap-1 items-start justify-center">
+          <span className="text-text-primary text-2xl font-bold">
+            Reset Password
+          </span>
+          <span className="text-xs text-text-dimmed">
+            choose a new, strong password.
+          </span>
+        </div>
+
+        <div className="w-full h-fit flex flex-col items-start justify-center gap-4">
+          <div className="flex flex-col w-full items-start justify-center gap-1">
+            <Input
+              variant="password"
+              label="New Password*"
+              hint="At least 8 characters"
+              leadingIcon={LockIcon}
+              onChange={(e) =>
+                setResetPasswordInfo({
+                  ...resetPasswordInfo,
+                  newPassword: e.target.value,
+                })
+              }
+            />
+
+            <div className="w-full h-fit flex items-center justify-start gap-1 text-xs text-text-dimmed">
+              <span className={""}>8+ chars</span>
+              <span>·</span>
+              <span>1 num</span>
+              <span>·</span>
+              <span>1 symbol</span>
+              <span>·</span>
+              <span>1 uppercase</span>
+              <span>·</span>
+              <span>1 lowercase</span>
+            </div>
+          </div>
+
+          <Input
+            variant="password"
+            label="Confirm New Password*"
+            hint="Confirm new password"
+            leadingIcon={LockIcon}
+            onChange={(e) =>
+              setResetPasswordInfo({
+                ...resetPasswordInfo,
+                confirmPassword: e.target.value,
+              })
+            }
+          />
+        </div>
+
+        <Button
+          variant="primary"
+          btnText="Update Password"
+          trailingIcon={ArrowRight}
+        />
+
+        <div className="w-full h-fit border-t py-4 mt-3 border-border-subtle flex items-center justify-center select-none">
+          <span className="text-xs text-text-muted font-medium">
+            Remember your password?
+          </span>
+          <Button
+            variant="transparent"
+            btnText="Sign in"
+            className="font-medium hover:underline"
+            onClick={() => setCurrentTab(ETabs.SIGN_IN)}
+          />
+        </div>
+      </div>
+    </>
+  );
 };
 
-const Verification = () => {
-  return <></>;
+const Verification = ({
+  setCurrentTab,
+}: {
+  setCurrentTab: Dispatch<React.SetStateAction<ETabs>>;
+}) => {
+  const [verifiedUserInfo, setVerifiedUserInfo] = useState<
+    Omit<IUser, "password">
+  >({
+    name: "",
+    email: "",
+    is_client: false,
+    is_email_verified: false,
+    company: "",
+  });
+
+  return (
+    <>
+      <div className="w-md h-fit px-6 py-6 rounded-2xl border border-border-subtle bg-surface-subtle flex flex-col items-center justify-center gap-4 select-none mt-20 mb-15">
+        <div className="flex items-center justify-center bg-white w-14 h-14 rounded-2xl">
+          <VerifiedIcon className="text-black w-12" />
+        </div>
+
+        <span className="text-xs bg-canvas px-2 py-0.5 rounded-md border border-border-subtle font-geist-mono font-medium text-text-muted tracking-widest">
+          VERIFICATION COMPLETE
+        </span>
+
+        <div className="w-full h-fit flex flex-col gap-1 items-center justify-center">
+          <span className="text-2xl font-semibold">
+            Email Verified Successfully
+          </span>
+          <span className="text-xs text-text-dimmed">
+            Your account is fully activated. You are ready to explore
+            devlopsfolio.
+          </span>
+        </div>
+
+        <div className="w-full h-fit flex flex-col items-center justify-center gap-1 px-3 py-3 border border-border-subtle bg-surface-elevated rounded-xl">
+          <div className="w-full flex gap-2 items-center justify-start">
+            <Image
+              src={"/test.jpeg"}
+              width={1000}
+              height={1000}
+              alt="Profile Pic"
+              className="w-12 h-12 rounded-lg border border-border-subtle"
+            />
+
+            <div className="w-full h-fit flex flex-col items-start justify-center gap-1">
+              <div className="w-full flex items-center justify-start gap-2">
+                <span>Roshan Kewat</span>
+                <span className="px-2 bg-text-primary tracking-wider rounded-sm text-black text-xs font-medium font-geist-mono">
+                  {verifiedUserInfo.is_client ? "CLIENT" : "DEVELOPER"}
+                </span>
+              </div>
+              <span className="text-text-dimmed text-xs">
+                roshankewat9090@gmail.com
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full border border-border-subtle rounded-xl bg-surface-elevated px-3 py-3 flex flex-col items-start justify-center gap-2">
+          <span className="text-xs text-text-secondary font-medium">
+            Next Steps in Your{" "}
+            {verifiedUserInfo.is_client
+              ? "Client Workspace"
+              : "Developer Console"}
+            :
+          </span>
+
+          <ul className="text-xs text-text-dimmed list-disc w-full space-y-1 pl-5">
+            <li>
+              {verifiedUserInfo.is_client
+                ? "Select or post a project brief to run algorithmic talent matching."
+                : "Complete your skills matrix and upload portfolio projects."}
+            </li>
+            <li>
+              {verifiedUserInfo.is_client
+                ? "Tune algorithm parameters to recalibrate candidate rankings."
+                : "Browse client project opportunities with real-time match scores."}
+            </li>
+            <li>
+              {verifiedUserInfo.is_client
+                ? "Send direct invites and negotiate proposals with developers."
+                : "Submit custom proposals and receive direct project invitations."}
+            </li>
+          </ul>
+        </div>
+
+        <Button
+          variant="primary"
+          btnText={`Launch Your ${verifiedUserInfo.is_client ? "Client Workspace" : "Developer Console"}`}
+          trailingIcon={ArrowRight}
+        />
+
+        <Button
+          variant="transparent"
+          btnText="Sign in with another account"
+          className="text-xs"
+          textColor="text-text-dimmed"
+          hoverBgColor="text-text-secondary"
+          onClick={() => setCurrentTab(ETabs.SIGN_IN)}
+        />
+      </div>
+    </>
+  );
 };
 
 const AuthContent = () => {
@@ -623,8 +819,12 @@ const AuthContent = () => {
         {currentTab == ETabs.FORGOT_PASSWORD && (
           <ForgotPassword setCurrentTab={setCurrentTab} />
         )}
-        {currentTab == ETabs.RESET_PASSWORD && <ResetPassword />}
-        {currentTab == ETabs.VERIFICATION && <Verification />}
+        {currentTab == ETabs.RESET_PASSWORD && (
+          <ResetPassword setCurrentTab={setCurrentTab} />
+        )}
+        {currentTab == ETabs.VERIFICATION && (
+          <Verification setCurrentTab={setCurrentTab} />
+        )}
       </div>
 
       <footer className="w-full px-12 py-2 h-14 bg-canvas border border-border-subtle mt-auto flex items-center justify-between">
