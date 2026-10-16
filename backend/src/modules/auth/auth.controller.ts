@@ -120,7 +120,7 @@ const verifyEmail = async (handler: RequestHandlerParams) => {
       },
     },
     { new: true },
-  );
+  ).select("-password");
 
   if (!user) {
     throw new NotFoundException("User not found.");
