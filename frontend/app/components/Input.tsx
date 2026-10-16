@@ -33,12 +33,13 @@ const Input = ({
       {variant == "primary" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
+          className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
             <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
             {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
           </div>
+
           <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
             {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
             <input
@@ -56,7 +57,7 @@ const Input = ({
       {variant == "number" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
+          className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
             <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
@@ -79,7 +80,7 @@ const Input = ({
       {variant == "password" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
+          className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
             <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
@@ -112,7 +113,7 @@ const Input = ({
       {variant == "select" && (
         <label
           htmlFor={label}
-          className="w-full h-fit flex flex-col gap-0.5 items-start justify-center transition-all duration-300"
+          className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
             <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>

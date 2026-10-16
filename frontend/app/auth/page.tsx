@@ -101,7 +101,7 @@ const SignUp = ({
   return (
     <>
       <div
-        className="w-lg h-fit rounded-2xl bg-surface-subtle border border-border-subtle py-5 px-7 flex flex-col items-center justify-start gap-3"
+        className="w-lg h-fit rounded-2xl bg-surface-subtle border border-border-subtle py-5 px-7 flex flex-col items-center justify-start gap-3 mt-20 mb-15"
         onKeyDown={() => handlerSignUp()}
       >
         <div className="w-full h-fit flex flex-col items-start justify-center gap-0.5">
@@ -403,7 +403,7 @@ const SignIn = ({
   return (
     <>
       <div
-        className="w-md h-fit rounded-2xl bg-surface-subtle border border-border-subtle py-6 px-8 flex flex-col items-center justify-start gap-5"
+        className="w-md h-fit rounded-2xl bg-surface-subtle border border-border-subtle py-6 px-8 flex flex-col items-center justify-start gap-5 mt-20 mb-15"
         onKeyDown={() => handlerSignIn()}
       >
         <div className="w-full h-fit flex flex-col items-start justify-center gap-0.5">
@@ -482,8 +482,70 @@ const SignIn = ({
   );
 };
 
-const ForgotPassword = () => {
-  return <></>;
+const ForgotPassword = ({
+  setCurrentTab,
+}: {
+  setCurrentTab: Dispatch<React.SetStateAction<ETabs>>;
+}) => {
+  const [email, setEmail] = useState<string>("");
+
+  const handlerForgotPassword = () => {
+    console.log(email);
+  };
+
+  return (
+    <>
+      <div className="w-md h-fit px-6 py-6 rounded-2xl border border-border-subtle bg-surface-subtle flex flex-col items-center justify-center gap-4">
+        <div className="w-full flex items-center justify-start">
+          <div className="bg-surface-elevated border border-border-subtle rounded-xl w-10 h-10 flex items-center justify-center">
+            <Key className="w-5 text-text-secondary" />
+          </div>
+        </div>
+
+        <div className="w-full flex flex-col gap-1 items-start justify-center">
+          <span className="text-text-primary text-2xl font-bold">
+            Forgot Password?
+          </span>
+          <span className="text-xs text-text-dimmed">
+            No worries. Enter your registered email address and we'll send a
+            verification recovery code.
+          </span>
+        </div>
+
+        <div className="w-full mt-4 flex flex-col gap-4 items-start justify-center">
+          <Input
+            variant="primary"
+            label="Registered Email Address"
+            hint="e.g name@Company.com"
+            leadingIcon={Mail}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+
+          <Button
+            variant="primary"
+            btnText="Send recovery link"
+            trailingIcon={ArrowRight}
+            isDisabled={email === ""}
+            onClick={() => handlerForgotPassword()}
+          />
+        </div>
+
+        <div className="w-[80%] h-fit border-t py-4 mt-3 border-border-subtle flex flex-col items-center justify-center">
+          <Button
+            variant="transparent"
+            btnText="Back to sign in"
+            className="text-xs font-medium"
+            textColor="text-text-dimmed"
+            hoverTextColor="text-text-secondary"
+            leadingIcon={ArrowLeft}
+            onClick={() => setCurrentTab(ETabs.SIGN_IN)}
+          />
+        </div>
+      </div>
+    </>
+  );
 };
 
 const ResetPassword = () => {
@@ -517,7 +579,7 @@ const AuthContent = () => {
   }, [currentTab]);
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-canvas">
       <div className="bg-canvas w-full h-12 border border-b-2 border-border-subtle flex px-12 py-2 items-center justify-between gap-5 font-geist-mono fixed">
         <h2 className="font-semibold">devlopsfolio.in</h2>
         <div className="w-fit h-full flex items-center justify-between gap-4">
@@ -543,7 +605,7 @@ const AuthContent = () => {
         </Link>
       </div>
 
-      <div className="w-full h-full flex items-center justify-center mt-20 mb-15">
+      <div className="w-full flex-1 flex items-center justify-center">
         {currentTab == ETabs.SIGN_UP && (
           <SignUp
             setCurrentTab={setCurrentTab}
@@ -558,12 +620,14 @@ const AuthContent = () => {
             userInfo={userInfo}
           />
         )}
-        {currentTab == ETabs.FORGOT_PASSWORD && <ForgotPassword />}
+        {currentTab == ETabs.FORGOT_PASSWORD && (
+          <ForgotPassword setCurrentTab={setCurrentTab} />
+        )}
         {currentTab == ETabs.RESET_PASSWORD && <ResetPassword />}
         {currentTab == ETabs.VERIFICATION && <Verification />}
       </div>
 
-      <footer className="w-full px-12 py-2 h-14 bg-canvas border border-border-subtle flex items-center justify-between">
+      <footer className="w-full px-12 py-2 h-14 bg-canvas border border-border-subtle mt-auto flex items-center justify-between">
         <span className="text-xs text-text-dimmed">
           devlopsfolio Auth System · End-to-End Cryptographic & Verification
           Flows
@@ -599,7 +663,7 @@ const AuthContent = () => {
           </button>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 

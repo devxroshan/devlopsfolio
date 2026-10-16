@@ -1,5 +1,4 @@
-import { LucideIcon, Variable } from "lucide-react";
-import React from "react";
+import { LucideIcon } from "lucide-react";
 
 type Variants = "primary" | "secondary" | "transparent";
 
@@ -15,6 +14,7 @@ interface ButtonProps {
   borderColor?: string;
   hoverBorderColor?: string;
   onClick?: () => void;
+  isDisabled?: boolean;
   className?: string;
 }
 
@@ -29,14 +29,20 @@ const Button = ({
   hoverBgColor,
   borderColor,
   hoverBorderColor,
+  isDisabled = false,
   onClick,
   className,
 }: ButtonProps) => {
+  const PRIMARY_STYLE = isDisabled
+    ? `w-full flex items-center justify-center gap-1 text-sm rounded-lg py-1.5 font-medium transition-all duration-300 outline-none bg-white/60 text-black`
+    : `w-full flex items-center justify-center gap-1 cursor-pointer text-sm rounded-lg py-1.5 font-medium hover:font-semibold transition-all duration-300 outline-none active:scale-95 ${bgColor ? bgColor : "bg-white"}  ${hoverBgColor ? `hover:${hoverBgColor}` : "hover:bg-white/80"} ${textColor ? textColor : "text-black"} ${hoverTextColor ? `hover:${hoverTextColor}` : "hover:text-black"} ${className}`;
+
   return (
     <>
       {variant == "primary" && (
         <button
-          className={`w-full flex items-center justify-center gap-1 cursor-pointer text-sm ${bgColor ? bgColor : "bg-white"}  ${hoverBgColor ? `hover:${hoverBgColor}` : "hover:bg-white/80"} rounded-lg py-1.5 ${textColor ? textColor : "text-black"} font-medium hover:font-semibold transition-all duration-300 outline-none ${hoverTextColor ? `hover:${hoverTextColor}` : "hover:text-black"} active:scale-95 ${className}`}
+          disabled={isDisabled}
+          className={PRIMARY_STYLE}
           onClick={onClick}
         >
           {LeadingIcon && <LeadingIcon className="w-5" />}
@@ -47,7 +53,7 @@ const Button = ({
 
       {variant == "secondary" && (
         <button
-          className={`w-full flex items-center justify-center gap-1 cursor-pointer text-sm ${bgColor ? bgColor : "bg-surface-elevated"}  ${hoverBgColor ? `hover:${hoverBgColor}` : "hover:bg-surface-hover"} border ${borderColor ? borderColor : "border-border-subtle"} ${hoverBorderColor ? `hover:${hoverBorderColor}`:"hover:border-border-hover"} rounded-lg py-1.5 ${textColor ? textColor : "text-text-secondary"} font-medium hover:font-semibold transition-all duration-300 outline-none ${hoverTextColor ? `hover:${hoverTextColor}` : "hover:text-text-secondary"} active:scale-95 ${className}`}
+          className={`w-full flex items-center justify-center gap-1 cursor-pointer text-sm ${bgColor ? bgColor : "bg-surface-elevated"}  ${hoverBgColor ? `hover:${hoverBgColor}` : "hover:bg-surface-hover"} border ${borderColor ? borderColor : "border-border-subtle"} ${hoverBorderColor ? `hover:${hoverBorderColor}` : "hover:border-border-hover"} rounded-lg py-1.5 ${textColor ? textColor : "text-text-secondary"} font-medium hover:font-semibold transition-all duration-300 outline-none ${hoverTextColor ? `hover:${hoverTextColor}` : "hover:text-text-secondary"} active:scale-95 ${className}`}
           onClick={onClick}
         >
           {LeadingIcon && <LeadingIcon className="w-5" />}
