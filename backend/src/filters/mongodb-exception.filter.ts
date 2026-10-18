@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { MongoServerError } from "mongodb";
 import type { IException } from "../interfaces/exception.js";
+import { env } from "../config/env.js";
 
 export const handleMongoDBException = (
   err: any,
@@ -14,7 +15,7 @@ export const handleMongoDBException = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: {},
-    rawError: err,
+    rawError: env.isDevelopment ? err : {},
     statusCode: 500,
   };
 

@@ -13,6 +13,7 @@ import { handleJwtExceptionFilter } from "./jwt-exception.filter.js";
 import { handleValidationFilter } from "./validation-exception.filter.js";
 import { handleMongoDBException } from "./mongodb-exception.filter.js";
 import { logger } from "../utils/logger.js";
+import { env } from "../config/env.js";
 
 export const allExceptionFilter = (
   err: any,
@@ -26,7 +27,7 @@ export const allExceptionFilter = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: err.details || {},
-    rawError: err,
+    rawError: env.isDevelopment ? err : {},
   };
 
   if (err instanceof HttpException) return handleHttpException(err, req, res);

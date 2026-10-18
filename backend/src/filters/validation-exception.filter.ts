@@ -3,6 +3,8 @@ import z from "zod";
 
 import type { IException } from "../interfaces/exception.js";
 
+import { env } from "../config/env.js";
+
 export const handleValidationFilter = (
   err: z.ZodError,
   req: express.Request,
@@ -18,7 +20,7 @@ export const handleValidationFilter = (
       code: issue.code,
       msg: issue.message,
     })),
-    rawError: err,
+    rawError: env.isDevelopment ? err : {},
   };
 
   res.status(400).json(exception);

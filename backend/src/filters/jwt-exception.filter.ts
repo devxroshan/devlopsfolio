@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 
 import type { IException } from "../interfaces/exception.js";
 
+import { env } from "../config/env.js";
+
 export const handleJwtExceptionFilter = (
   err: unknown,
   req: express.Request,
@@ -14,7 +16,7 @@ export const handleJwtExceptionFilter = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: {},
-    rawError: err,
+    rawError: env.isDevelopment ? err : {},
   };
 
   if (err instanceof jwt.JsonWebTokenError) {
