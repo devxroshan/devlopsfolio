@@ -35,7 +35,7 @@ const Button = ({
 }: ButtonProps) => {
   const PRIMARY_STYLE = isDisabled
     ? `w-full flex items-center justify-center gap-1 text-sm rounded-lg py-1.5 font-medium transition-all duration-300 outline-none bg-white/60 text-black`
-    : `w-full flex items-center justify-center gap-1 cursor-pointer text-sm rounded-lg py-1.5 font-medium hover:font-semibold transition-all duration-300 outline-none active:scale-95 ${bgColor ? bgColor : "bg-white"}  ${hoverBgColor ? `hover:${hoverBgColor}` : "hover:bg-white/80"} ${textColor ? textColor : "text-black"} ${hoverTextColor ? `hover:${hoverTextColor}` : "hover:text-black"} ${className}`;
+    : `w-full flex items-center justify-center gap-1 cursor-pointer text-sm rounded-lg py-1.5 font-medium hover:font-semibold transition-all duration-300 outline-none active:scale-95 ${bgColor ? bgColor : "bg-white"}  ${hoverBgColor ? `${hoverBgColor}` : "hover:bg-white/80"} ${textColor ? textColor : "text-black"} ${hoverTextColor ? `${hoverTextColor}` : "hover:text-black"} ${className}`;
 
   return (
     <>
@@ -53,7 +53,7 @@ const Button = ({
 
       {variant == "secondary" && (
         <button
-          className={`w-full flex items-center justify-center gap-1 cursor-pointer text-sm ${bgColor ? bgColor : "bg-surface-elevated"}  ${hoverBgColor ? `hover:${hoverBgColor}` : "hover:bg-surface-hover"} border ${borderColor ? borderColor : "border-border-subtle"} ${hoverBorderColor ? `hover:${hoverBorderColor}` : "hover:border-border-hover"} rounded-lg py-1.5 ${textColor ? textColor : "text-text-secondary"} font-medium hover:font-semibold transition-all duration-300 outline-none ${hoverTextColor ? `hover:${hoverTextColor}` : "hover:text-text-secondary"} active:scale-95 ${className}`}
+          className={`w-full flex items-center justify-center gap-1 cursor-pointer text-sm ${bgColor ? bgColor : "bg-surface-elevated"}  ${hoverBgColor ? `${hoverBgColor}` : "hover:bg-surface-hover"} border ${borderColor ? borderColor : "border-border-subtle"} ${hoverBorderColor ? `${hoverBorderColor}` : "hover:border-border-hover"} rounded-lg py-1.5 ${textColor ? textColor : "text-text-secondary"} font-medium hover:font-semibold transition-all duration-300 outline-none ${hoverTextColor ? `${hoverTextColor}` : "hover:text-text-secondary"} active:scale-95 ${className}`}
           onClick={onClick}
         >
           {LeadingIcon && <LeadingIcon className="w-5" />}
@@ -64,7 +64,7 @@ const Button = ({
 
       {variant == "transparent" && (
         <button
-          className={`w-fit h-fit flex items-center justify-center gap-1 cursor-pointer text-sm rounded-lg ${bgColor ?? "bg-transparent"} ${hoverBgColor ? `hover:${hoverBgColor}` : ""} ${textColor ?? "text-white"} font-medium hover:font-semibold transition-all duration-300 outline-none ${hoverTextColor ? `hover:${hoverTextColor}` : "hover:text-text-dimmed"} active:scale-95 ${className}`}
+          className={`w-fit h-fit flex items-center justify-center gap-1 cursor-pointer text-sm rounded-lg ${bgColor ?? "bg-transparent"} ${hoverBgColor ? `${hoverBgColor}` : ""} ${textColor ?? "text-white"} font-medium hover:font-semibold transition-all duration-300 outline-none ${hoverTextColor ? `${hoverTextColor}` : "hover:text-text-dimmed"} active:scale-95 ${className}`}
           onClick={onClick}
         >
           {LeadingIcon && <LeadingIcon className="w-5" />}

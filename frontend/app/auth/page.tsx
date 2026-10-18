@@ -449,7 +449,7 @@ const SignIn = ({
             btnText="Forgot Password?"
             className="text-xs ml-auto"
             textColor="text-text-dimmed"
-            hoverTextColor="text-text-primary"
+            hoverTextColor="hover:text-text-primary"
             onClick={() => setCurrentTab(ETabs.FORGOT_PASSWORD)}
           />
         </div>
