@@ -23,7 +23,7 @@ import { useRouter } from "next/navigation";
 import Input from "../components/Input";
 import Button from "../components/Button";
 
-const enum ETabs {
+enum ETabs {
   SIGN_UP = "sign_up",
   SIGN_IN = "sign_in",
   FORGOT_PASSWORD = "forgot_password",
@@ -760,18 +760,22 @@ const AuthContent = () => {
     ...userDefaults,
     ...developerDefaults,
   });
-  const [currentTab, setCurrentTab] = useState<ETabs>(
-    (searchParams.get("tab") as ETabs) ?? ETabs.SIGN_UP,
-  );
+  const [currentTab, setCurrentTab] = useState<ETabs>(ETabs.SIGN_UP);
 
   useEffect(() => {
     if (!searchParams.get("tab")) {
-      router.push(`?tab=${tabs[0].matcher}`);
-      setCurrentTab(tabs[0].matcher);
+      setCurrentTab(ETabs.SIGN_UP);
     } else {
-      router.push(`?tab=${currentTab}`);
+      if (!Object.values(ETabs).includes(searchParams.get("tab") as ETabs)) {
+        setCurrentTab(ETabs.SIGN_IN);
+      } else {
+        setCurrentTab(searchParams.get("tab") as ETabs);
+      }
     }
-    return () => {};
+  }, [searchParams]);
+
+  useEffect(() => {
+    router.push(`?tab=${currentTab}`);
   }, [currentTab]);
 
   return (
