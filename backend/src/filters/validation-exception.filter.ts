@@ -3,7 +3,6 @@ import z from "zod";
 
 import type { IException } from "../interfaces/exception.js";
 
-
 export const handleValidationFilter = (
   err: z.ZodError,
   req: express.Request,
@@ -14,7 +13,11 @@ export const handleValidationFilter = (
     msg: "Validation Error",
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
-    details: err.issues.map((issue) => [issue.path.join("."), issue.message]),
+    details: err.issues.map((issue) => ({
+      field: issue.path.join("."),
+      code: issue.code,
+      msg: issue.message,
+    })),
     rawError: err,
   };
 
