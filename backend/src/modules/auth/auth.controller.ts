@@ -179,7 +179,7 @@ const signIn = async (handler: RequestHandlerParams) => {
   const EXPIRY_MINUTES = 5;
   const ACESS_TOKEN_EXPIRY_DAY = 30;
 
-  const { email, password } = handler.req.query as {
+  const { email, password } = handler.req.body as {
     email: string;
     password: string;
   };

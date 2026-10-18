@@ -21,7 +21,7 @@ import { newVerificationSession } from "./schema/new-verification-session.schema
 const router = express.Router();
 
 router.post("/signup",schemaValidator({ body: signUpSchema }), SignUp);
-router.get("/signin",schemaValidator({ query: signInSchema }), SignIn);
+router.post("/signin",schemaValidator({ body: signInSchema }), SignIn);
 router.patch("/verify-email", schemaValidator({ body: verifyEmailSchema }), VerifyEmail);
 router.patch("/new-verification-session", schemaValidator({ query: newVerificationSession }), RequestNewVerificationSession);
 router.get("/forgot-password",schemaValidator({ query: forgotPasswordSchema }), ForgotPassword);
