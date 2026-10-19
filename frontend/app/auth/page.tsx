@@ -38,7 +38,13 @@ import { ETabs, EAvailability } from "./enums";
 import { LocalAppError } from "../types/local-error";
 
 // API
-import { ForgotPasswordAPI, SignInAPI, SignUpAPI, VerifyEmailAPI } from "./api";
+import {
+  ForgotPasswordAPI,
+  ResetPasswordAPI,
+  SignInAPI,
+  SignUpAPI,
+  VerifyEmailAPI,
+} from "./api";
 
 // utils
 import { getLocalFieldErr } from "../utils/getLocalFieldErr";
@@ -47,6 +53,12 @@ import { getLocalFieldErr } from "../utils/getLocalFieldErr";
 import { VerifyEmailInfo } from "./schema/verify-email.schema";
 import { SignInInfo } from "./schema/signin.schema";
 import { ForgotPasswordInfo } from "./schema/forgot-password.schema";
+import {
+  ResetPasswordInfo,
+  resetPasswordSchema,
+} from "./schema/reset-password.schema";
+import { ApiError } from "next/dist/server/api-utils";
+import { schemaValidator } from "../utils/schema-validator";
 
 const tabs = [
   { name: "Sign Up", matcher: ETabs.SIGN_UP },
@@ -169,10 +181,11 @@ const SignUp = ({
               variant="primary"
               label="Full Name"
               hint="e.g Roshan Kewat"
-              error={getLocalFieldErr(
-                "name",
-                signUpMutation.error as LocalAppError,
-              )}
+              value={userInfo.name}
+              error={
+                getLocalFieldErr("name", signUpMutation.error as LocalAppError)
+                  ?.msg ?? ""
+              }
               leadingIcon={UserIcon}
               onChange={(e) => {
                 setUserInfo({
@@ -184,11 +197,12 @@ const SignUp = ({
             <Input
               variant="primary"
               label="Work Email"
+              value={userInfo.email}
               hint="e.g your@mail.com"
-              error={getLocalFieldErr(
-                "email",
-                signUpMutation.error as LocalAppError,
-              )}
+              error={
+                getLocalFieldErr("email", signUpMutation.error as LocalAppError)
+                  ?.msg ?? ""
+              }
               leadingIcon={Mail}
               onChange={(e) => {
                 setUserInfo({
@@ -200,6 +214,7 @@ const SignUp = ({
             <Input
               variant="primary"
               label="Company/Organization"
+              value={userInfo.company}
               hint="e.g Microsoft"
               leadingIcon={Building}
               onChange={(e) => {
@@ -212,11 +227,14 @@ const SignUp = ({
             <Input
               variant="password"
               label="Password"
+              value={userInfo.password}
               hint="••••••••••••••••"
-              error={getLocalFieldErr(
-                "password",
-                signUpMutation.error as LocalAppError,
-              )}
+              error={
+                getLocalFieldErr(
+                  "password",
+                  signUpMutation.error as LocalAppError,
+                )?.msg ?? ""
+              }
               leadingIcon={Key}
               onChange={(e) => {
                 setUserInfo({
@@ -234,10 +252,13 @@ const SignUp = ({
                     <Input
                       variant="select"
                       label="Discipline"
-                      error={getLocalFieldErr(
-                        "discipline",
-                        signUpMutation.error as LocalAppError,
-                      )}
+                      value={userInfo.discipline}
+                      error={
+                        getLocalFieldErr(
+                          "discipline",
+                          signUpMutation.error as LocalAppError,
+                        )?.msg ?? ""
+                      }
                       hint="e.g Full-stack Development"
                       options={[
                         {
@@ -312,10 +333,13 @@ const SignUp = ({
                       variant="primary"
                       label="Title"
                       hint="e.g Senior Software Engineer"
-                      error={getLocalFieldErr(
-                        "title",
-                        signUpMutation.error as LocalAppError,
-                      )}
+                      value={userInfo.title}
+                      error={
+                        getLocalFieldErr(
+                          "title",
+                          signUpMutation.error as LocalAppError,
+                        )?.msg ?? ""
+                      }
                       leadingIcon={BriefcaseIcon}
                       onChange={(e) => {
                         setUserInfo({
@@ -330,10 +354,13 @@ const SignUp = ({
                       variant="primary"
                       label="Time Zone"
                       hint="e.g Asia/Kolkata (UTC+5:30)"
-                      error={getLocalFieldErr(
-                        "time_zone",
-                        signUpMutation.error as LocalAppError,
-                      )}
+                      value={userInfo.time_zone}
+                      error={
+                        getLocalFieldErr(
+                          "time_zone",
+                          signUpMutation.error as LocalAppError,
+                        )?.msg ?? ""
+                      }
                       leadingIcon={Clock}
                       onChange={(e) => {
                         setUserInfo({ ...userInfo, time_zone: e.target.value });
@@ -343,10 +370,13 @@ const SignUp = ({
                       variant="primary"
                       label="Location"
                       hint="e.g Bengaluru, India"
-                      error={getLocalFieldErr(
-                        "location",
-                        signUpMutation.error as LocalAppError,
-                      )}
+                      value={userInfo.location}
+                      error={
+                        getLocalFieldErr(
+                          "location",
+                          signUpMutation.error as LocalAppError,
+                        )?.msg ?? ""
+                      }
                       leadingIcon={LocateIcon}
                       onChange={(e) => {
                         setUserInfo({ ...userInfo, location: e.target.value });
@@ -357,11 +387,14 @@ const SignUp = ({
                     <Input
                       variant="number"
                       label="Years of Experience"
+                      value={userInfo.experience_years}
                       hint="e.g 5"
-                      error={getLocalFieldErr(
-                        "experience_years",
-                        signUpMutation.error as LocalAppError,
-                      )}
+                      error={
+                        getLocalFieldErr(
+                          "experience_years",
+                          signUpMutation.error as LocalAppError,
+                        )?.msg ?? ""
+                      }
                       onChange={(e) => {
                         setUserInfo({
                           ...userInfo,
@@ -373,10 +406,13 @@ const SignUp = ({
                       variant="number"
                       label="Hourly Rate (₹)"
                       hint="e.g 1500"
-                      error={getLocalFieldErr(
-                        "hourly_rate_rupees",
-                        signUpMutation.error as LocalAppError,
-                      )}
+                      value={userInfo.hourly_rate_rupees}
+                      error={
+                        getLocalFieldErr(
+                          "hourly_rate_rupees",
+                          signUpMutation.error as LocalAppError,
+                        )?.msg ?? ""
+                      }
                       onChange={(e) => {
                         setUserInfo({
                           ...userInfo,
@@ -389,11 +425,14 @@ const SignUp = ({
                   <Input
                     variant="select"
                     label="Availability"
+                    value={userInfo.availability}
                     hint="e.g Full time, Part time, or Not available"
-                    error={getLocalFieldErr(
-                      "availability",
-                      signUpMutation.error as LocalAppError,
-                    )}
+                    error={
+                      getLocalFieldErr(
+                        "availability",
+                        signUpMutation.error as LocalAppError,
+                      )?.msg ?? ""
+                    }
                     options={[
                       { label: "Full Time", value: "full time" },
                       { label: "Part Time", value: "part time" },
@@ -558,10 +597,11 @@ const SignIn = ({
               variant="primary"
               label="Email Address"
               hint="e.g name@Company.com"
-              error={getLocalFieldErr(
-                "email",
-                signInMutation.error as LocalAppError,
-              )}
+              value={signInInfo.email}
+              error={
+                getLocalFieldErr("email", signInMutation.error as LocalAppError)
+                  ?.msg ?? ""
+              }
               leadingIcon={Mail}
               onChange={(e) => {
                 setSignInInfo({
@@ -574,10 +614,13 @@ const SignIn = ({
               variant="password"
               label="Password"
               hint="••••••••••••••••"
-              error={getLocalFieldErr(
-                "password",
-                signInMutation.error as LocalAppError,
-              )}
+              value={signInInfo.password}
+              error={
+                getLocalFieldErr(
+                  "password",
+                  signInMutation.error as LocalAppError,
+                )?.msg ?? ""
+              }
               leadingIcon={Key}
               onChange={(e) => {
                 setSignInInfo({
@@ -688,10 +731,13 @@ const ForgotPassword = ({
             variant="primary"
             label="Registered Email Address"
             hint="e.g name@Company.com"
-            error={getLocalFieldErr(
-              "email",
-              forgotPasswordMutation.error as LocalAppError,
-            )}
+            value={forgotPasswordInfo.email}
+            error={
+              getLocalFieldErr(
+                "email",
+                forgotPasswordMutation.error as LocalAppError,
+              )?.msg ?? ""
+            }
             leadingIcon={Mail}
             onChange={(e) => {
               setForgotPasswordInfo({
@@ -732,89 +778,216 @@ const ResetPassword = ({
 }: {
   setCurrentTab: Dispatch<React.SetStateAction<ETabs>>;
 }) => {
-  const [resetPasswordInfo, setResetPasswordInfo] = useState<{
-    newPassword: string;
-    confirmPassword: string;
-  }>({ newPassword: "", confirmPassword: "" });
+  const searchParams = useSearchParams();
+
+  const [resetPasswordInfo, setResetPasswordInfo] = useState<ResetPasswordInfo>(
+    { newPassword: "", confirmPassword: "", token: "" },
+  );
+  const [validation, setValidation] = useState<{
+    isMatched: boolean;
+    isLowercase: boolean;
+    isUppercase: boolean;
+    isNumber: boolean;
+    isLongEnough: boolean;
+    isSymbol: boolean;
+  }>();
+
+  const resetPasswordMutation = useMutation<
+    APISuccess,
+    LocalAppError | ApiError,
+    ResetPasswordInfo
+  >({
+    mutationFn: ResetPasswordAPI,
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const handleResetPassword = () => {
+    if (validation?.isMatched) {
+      resetPasswordMutation.mutate(resetPasswordInfo);
+    }
+  };
+
+  const handleValidation = async () => {
+    try {
+      await schemaValidator(resetPasswordSchema, resetPasswordInfo);
+      setValidation({
+        isMatched: true,
+        isLowercase: true,
+        isUppercase: true,
+        isNumber: true,
+        isLongEnough: true,
+        isSymbol: true,
+      });
+    } catch (error) {
+      const errors = (error as LocalAppError).fieldErrors || [];
+      const errorCodes = new Set(errors.map((err) => err.code));
+
+      setValidation({
+        isLongEnough: !errorCodes.has("TOO_SHORT"),
+        isNumber: !errorCodes.has("MISSING_NUMBER"),
+        isLowercase: !errorCodes.has("MISSING_LOWERCASE"),
+        isUppercase: !errorCodes.has("MISSING_UPPERCASE"),
+        isSymbol: !errorCodes.has("MISSING_SYMBOL"),
+        isMatched: !errorCodes.has("PASSWORD_MISMATCH"),
+      });
+    }
+  };
+
+  useEffect(() => {
+    handleValidation();
+  }, [resetPasswordInfo]);
+
+  useEffect(() => {
+    setResetPasswordInfo({
+      ...resetPasswordInfo,
+      token: searchParams.get("token") ?? "",
+    });
+  }, [searchParams]);
 
   return (
     <>
-      <div className="w-md h-fit px-6 py-6 rounded-2xl border border-border-subtle bg-surface-subtle flex flex-col items-center justify-center gap-4 select-none">
-        <div className="w-full flex items-center justify-start">
-          <div className="bg-surface-elevated border border-border-subtle rounded-xl w-10 h-10 flex items-center justify-center">
-            <VerifiedIcon className="w-5 text-text-secondary" />
-          </div>
-        </div>
-
-        <div className="w-full flex flex-col gap-1 items-start justify-center">
-          <span className="text-text-primary text-2xl font-bold">
-            Reset Password
-          </span>
-          <span className="text-xs text-text-dimmed">
-            choose a new, strong password.
-          </span>
-        </div>
-
-        <div className="w-full h-fit flex flex-col items-start justify-center gap-4">
-          <div className="flex flex-col w-full items-start justify-center gap-1">
-            <Input
-              variant="password"
-              label="New Password*"
-              hint="At least 8 characters"
-              leadingIcon={LockIcon}
-              onChange={(e) =>
-                setResetPasswordInfo({
-                  ...resetPasswordInfo,
-                  newPassword: e.target.value,
-                })
-              }
-            />
-
-            <div className="w-full h-fit flex items-center justify-start gap-1 text-xs text-text-dimmed">
-              <span className={""}>8+ chars</span>
-              <span>·</span>
-              <span>1 num</span>
-              <span>·</span>
-              <span>1 symbol</span>
-              <span>·</span>
-              <span>1 uppercase</span>
-              <span>·</span>
-              <span>1 lowercase</span>
+      {!resetPasswordMutation.data?.ok ? (
+        <div
+          className="w-md h-fit px-6 py-6 rounded-2xl border border-border-subtle bg-surface-subtle flex flex-col items-center justify-center gap-4 select-none"
+          onKeyDown={(e) => {
+            e.key == "Enter" && handleResetPassword();
+          }}
+        >
+          <div className="w-full flex items-center justify-start">
+            <div className="bg-surface-elevated border border-border-subtle rounded-xl w-10 h-10 flex items-center justify-center">
+              <VerifiedIcon className="w-5 text-text-secondary" />
             </div>
           </div>
 
-          <Input
-            variant="password"
-            label="Confirm New Password*"
-            hint="Confirm new password"
-            leadingIcon={LockIcon}
-            onChange={(e) =>
-              setResetPasswordInfo({
-                ...resetPasswordInfo,
-                confirmPassword: e.target.value,
-              })
-            }
-          />
-        </div>
+          <div className="w-full flex flex-col gap-1 items-start justify-center">
+            <span className="text-text-primary text-2xl font-bold">
+              Reset Password
+            </span>
+            <span className="text-xs text-text-dimmed">
+              choose a new, strong password.
+            </span>
+          </div>
 
-        <Button
-          variant="primary"
-          btnText="Update Password"
-          trailingIcon={ArrowRight}
-        />
+          <div className="w-full h-fit flex flex-col items-start justify-center gap-4">
+            <div className="flex flex-col w-full items-start justify-center gap-1">
+              <Input
+                variant="password"
+                label="New Password*"
+                hint="At least 8 characters"
+                leadingIcon={LockIcon}
+                value={resetPasswordInfo.newPassword}
+                onChange={(e) => {
+                  setResetPasswordInfo({
+                    ...resetPasswordInfo,
+                    newPassword: e.target.value,
+                  });
+                }}
+              />
 
-        <div className="w-full h-fit border-t py-4 mt-3 border-border-subtle flex items-center justify-center select-none">
-          <span className="text-xs text-text-muted font-medium">
-            Remember your password?
-          </span>
+              <div className="w-full h-fit flex items-center justify-start gap-1 text-xs text-text-dimmed">
+                <span
+                  className={`${validation?.isLongEnough ? "text-text-secondary" : ""}`}
+                >
+                  8+ chars
+                </span>
+                <span>·</span>
+                <span
+                  className={`${validation?.isNumber ? "text-text-secondary" : ""}`}
+                >
+                  num
+                </span>
+                <span>·</span>
+                <span
+                  className={`${validation?.isSymbol ? "text-text-secondary" : ""}`}
+                >
+                  symbol
+                </span>
+                <span>·</span>
+                <span
+                  className={`${validation?.isUppercase ? "text-text-secondary" : ""}`}
+                >
+                  uppercase
+                </span>
+                <span>·</span>
+                <span
+                  className={`${validation?.isLowercase ? "text-text-secondary" : ""}`}
+                >
+                  lowercase
+                </span>
+                <span>·</span>
+                <span
+                  className={`${validation?.isMatched ? "text-text-secondary" : ""}`}
+                >
+                  matches
+                </span>
+              </div>
+            </div>
+
+            <Input
+              variant="password"
+              label="Confirm New Password*"
+              hint="Confirm new password"
+              leadingIcon={LockIcon}
+              value={resetPasswordInfo.confirmPassword}
+              onChange={(e) =>
+                setResetPasswordInfo({
+                  ...resetPasswordInfo,
+                  confirmPassword: e.target.value,
+                })
+              }
+            />
+          </div>
+
           <Button
-            variant="transparent"
+            variant="primary"
+            btnText="Reset Password"
+            isDisabled={resetPasswordMutation.isPending}
+            onDisabledText={"Resetting..."}
+            trailingIcon={ArrowRight}
+            onClick={handleResetPassword}
+          />
+
+          <div className="w-full h-fit border-t py-4 mt-3 border-border-subtle flex items-center justify-center select-none">
+            <span className="text-xs text-text-muted font-medium">
+              Remember your password?
+            </span>
+            <Button
+              variant="transparent"
+              btnText="Sign in"
+              className="font-medium hover:underline"
+              onClick={() => setCurrentTab(ETabs.SIGN_IN)}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="w-md h-fit px-6 py-8 rounded-2xl border border-border-subtle bg-surface-subtle flex flex-col items-center justify-center gap-5 select-none text-center">
+          <div className="bg-surface-elevated border border-border-subtle rounded-2xl w-14 h-14 flex items-center justify-center">
+            <VerifiedIcon className="w-7 text-text-secondary" />
+          </div>
+
+          <div className="w-full flex flex-col gap-2 items-center justify-center">
+            <span className="text-text-primary text-2xl font-bold">
+              Password reset successfully
+            </span>
+            <span className="text-sm text-text-dimmed">
+              Your password has been updated. You can now sign in with your new
+              password.
+            </span>
+          </div>
+
+          <Button
+            variant="primary"
             btnText="Sign in"
-            className="font-medium hover:underline"
+            trailingIcon={ArrowRight}
             onClick={() => setCurrentTab(ETabs.SIGN_IN)}
           />
         </div>
-      </div>
+      )}
     </>
   );
 };

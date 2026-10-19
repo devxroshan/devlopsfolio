@@ -47,7 +47,10 @@ export const ForgotPasswordAPI = async (data: ForgotPasswordInfo) => {
 };
 export const ResetPasswordAPI = async (data: ResetPasswordInfo) => {
   await schemaValidator(resetPasswordSchema, data);
-  return await api.patch("/auth/reset-password", data);
+  return await api.patch<APISuccess, APISuccess, ResetPasswordInfo>(
+    "/auth/reset-password",
+    data,
+  );
 };
 export const RequestNewVerificationSessionAPI = async (data: SignUpInfo) => {
   return await api.patch("/auth/new-verification-session", data);

@@ -11,6 +11,7 @@ interface InputProps {
   leadingIcon?: LucideIcon;
   trailingIcon?: LucideIcon;
   options?: { label: string; value: string }[];
+  value: string | number;
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
@@ -23,6 +24,7 @@ const Input = ({
   error,
   leadingIcon: LeadingIcon,
   trailingIcon: TrailingIcon,
+  value,
   options,
   onChange,
 }: InputProps) => {
@@ -36,20 +38,32 @@ const Input = ({
           className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
-            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">
+              {label}
+            </span>
+            {error && (
+              <span className="text-xs text-red-700 transition-all duration-300">
+                {" "}
+                - {error}
+              </span>
+            )}
           </div>
 
           <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
+            {LeadingIcon && (
+              <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />
+            )}
             <input
               id={label}
               type="text"
               className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs transition-all duration-300"
               placeholder={hint}
+              value={value ?? ""}
               onChange={onChange}
             />
-            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />}
+            {TrailingIcon && (
+              <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />
+            )}
           </div>
         </label>
       )}
@@ -60,19 +74,31 @@ const Input = ({
           className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
-            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">
+              {label}
+            </span>
+            {error && (
+              <span className="text-xs text-red-700 transition-all duration-300">
+                {" "}
+                - {error}
+              </span>
+            )}
           </div>
           <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
+            {LeadingIcon && (
+              <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />
+            )}
             <input
               id={label}
               type="number"
               className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs transition-all duration-300"
               placeholder={hint}
+              value={value ?? ""}
               onChange={onChange}
             />
-            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />}
+            {TrailingIcon && (
+              <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />
+            )}
           </div>
         </label>
       )}
@@ -83,16 +109,26 @@ const Input = ({
           className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
-            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">
+              {label}
+            </span>
+            {error && (
+              <span className="text-xs text-red-700 transition-all duration-300">
+                {" "}
+                - {error}
+              </span>
+            )}
           </div>
           <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
+            {LeadingIcon && (
+              <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />
+            )}
             <input
               id={label}
               type={showPassword ? "text" : "password"}
               className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs transition-all duration-300"
               placeholder={hint}
+              value={value ?? ""}
               onChange={onChange}
             />
             {showPassword ? (
@@ -116,16 +152,25 @@ const Input = ({
           className="w-full h-fit flex flex-col gap-1 items-start justify-center transition-all duration-300"
         >
           <div className="flex w-full gap-0.5 items-center justify-start">
-            <span className="text-xs text-text-secondary transition-all duration-300">{label}</span>
-            {error && <span className="text-xs text-red-700 transition-all duration-300"> - {error}</span>}
+            <span className="text-xs text-text-secondary transition-all duration-300">
+              {label}
+            </span>
+            {error && (
+              <span className="text-xs text-red-700 transition-all duration-300">
+                {" "}
+                - {error}
+              </span>
+            )}
           </div>
           <div className="w-full h-8 rounded-lg border border-border-subtle focus-within:border-border-hover flex items-center justify-start bg-surface-subtle py-1 px-2 transition-all duration-300">
-            {LeadingIcon && <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />}
+            {LeadingIcon && (
+              <LeadingIcon className="w-4 text-text-dimmed transition-all duration-300" />
+            )}
             <select
               id={label}
               className="outline-none border-none px-2 w-full text-text-primary text-sm placeholder:text-xs bg-surface-subtle transition-all duration-300"
               onChange={onChange}
-              defaultValue=""
+              value={value ?? ""}
             >
               <option value="" disabled>
                 {hint ?? `Select ${label.toLowerCase()}`}
@@ -136,7 +181,9 @@ const Input = ({
                 </option>
               ))}
             </select>
-            {TrailingIcon && <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />}
+            {TrailingIcon && (
+              <TrailingIcon className="w-5 text-text-dimmed transition-all duration-300" />
+            )}
           </div>
         </label>
       )}

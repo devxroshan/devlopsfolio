@@ -1,12 +1,10 @@
-import { LocalAppError } from "../types/local-error";
+import { FieldError, LocalAppError } from "../types/local-error";
 
 export const getLocalFieldErr = (
   fieldName: string,
   err: LocalAppError,
-): string => {
-  if (!err) return "";
+): FieldError | undefined => {
+  if (!err) return undefined;
 
-  return (
-    err.fieldErrors?.filter((err) => err.fieldName === fieldName)[0]?.msg ?? ""
-  );
+  return err.fieldErrors?.find((err) => err.fieldName === fieldName);
 };
