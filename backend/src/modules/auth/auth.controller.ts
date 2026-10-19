@@ -276,7 +276,7 @@ const forgotPassword = async (handler: RequestHandlerParams) => {
     data: email,
   });
 
-  const resetUrl = `${env.FRONTEND}/reset-password?token=${forgotPasswordSession.id}`;
+  const resetUrl = `${env.FRONTEND}/auth?tab=reset_password?token=${forgotPasswordSession.id}`;
 
   const forgotPasswordHtml = await renderTemplate("forgot-password.html", {
     appName: process.env.APP_NAME as string,
