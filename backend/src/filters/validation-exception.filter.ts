@@ -14,6 +14,7 @@ export const handleValidationFilter = (
     ok: false,
     msg: "Validation Error",
     path: req.originalUrl,
+    code: "VALIDATION",
     timestamp: new Date().toISOString(),
     details: err.issues.map((issue) => ({
       field: issue.path.join("."),

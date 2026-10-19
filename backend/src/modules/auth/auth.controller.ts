@@ -221,7 +221,9 @@ const signIn = async (handler: RequestHandlerParams) => {
       });
     }
 
-    throw new BadRequestException("Email is not verified.");
+    throw new BadRequestException("Email is not verified.", {
+      code: "NOT_VERIFIED",
+    });
   }
 
   const isPassword = await argon2.verify(isUser.password, password);

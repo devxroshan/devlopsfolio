@@ -15,6 +15,7 @@ export const handleMongoDBException = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: {},
+    code: env.isDevelopment ? "MONGODB" : "DATABASE",
     rawError: env.isDevelopment ? err : {},
     statusCode: 500,
   };

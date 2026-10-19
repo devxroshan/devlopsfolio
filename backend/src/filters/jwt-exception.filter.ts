@@ -16,6 +16,7 @@ export const handleJwtExceptionFilter = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: {},
+    code: "ACCESS_TOKEN",
     rawError: env.isDevelopment ? err : {},
   };
 

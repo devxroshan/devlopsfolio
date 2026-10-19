@@ -27,6 +27,7 @@ export const allExceptionFilter = (
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     details: err.details || {},
+    code: err.code ?? "INTERNAL_SERVER_ERROR",
     rawError: env.isDevelopment ? err : {},
   };
 
