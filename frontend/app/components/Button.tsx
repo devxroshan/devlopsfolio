@@ -15,6 +15,7 @@ interface ButtonProps {
   hoverBorderColor?: string;
   onClick?: () => void;
   isDisabled?: boolean;
+  onDisabledText?: string;
   className?: string;
 }
 
@@ -30,6 +31,7 @@ const Button = ({
   borderColor,
   hoverBorderColor,
   isDisabled = false,
+  onDisabledText,
   onClick,
   className,
 }: ButtonProps) => {
@@ -46,7 +48,7 @@ const Button = ({
           onClick={onClick}
         >
           {LeadingIcon && <LeadingIcon className="w-5" />}
-          <span>{btnText}</span>
+          <span>{isDisabled ? onDisabledText : btnText}</span>
           {TrailingIcon && <TrailingIcon className="w-5" />}
         </button>
       )}
@@ -57,7 +59,7 @@ const Button = ({
           onClick={onClick}
         >
           {LeadingIcon && <LeadingIcon className="w-5" />}
-          <span>{btnText}</span>
+          <span>{isDisabled ? onDisabledText : btnText}</span>
           {TrailingIcon && <TrailingIcon className="w-5" />}
         </button>
       )}
@@ -68,7 +70,7 @@ const Button = ({
           onClick={onClick}
         >
           {LeadingIcon && <LeadingIcon className="w-5" />}
-          <span>{btnText}</span>
+          <span>{isDisabled ? onDisabledText : btnText}</span>
           {TrailingIcon && <TrailingIcon className="w-5" />}
         </button>
       )}

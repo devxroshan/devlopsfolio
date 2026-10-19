@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono , Inter} from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+
+import { QueryProvider } from "./providers/query.provider";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ['latin']
-})
+  subsets: ["latin"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +30,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistMono.variable} ${geistSans.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className={`min-h-full flex flex-col ${inter.className}`}>{children}</body>
+      <body className={`min-h-full flex flex-col ${inter.className}`}>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

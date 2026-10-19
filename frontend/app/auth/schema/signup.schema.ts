@@ -19,10 +19,11 @@ export const signUpSchema = z.discriminatedUnion("is_client", [
   baseSignUpSchema.extend({
     is_client: z.literal(true),
   }),
-
   baseSignUpSchema
     .extend({
       is_client: z.literal(false),
     })
     .extend(developerProfileSchema.shape),
 ]);
+
+export type SignUpInfo = z.infer<typeof signUpSchema>;
