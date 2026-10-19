@@ -119,7 +119,7 @@ const verifyEmail = async (handler: RequestHandlerParams) => {
         is_email_verified: true,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   ).select("-password");
 
   if (!user) {
