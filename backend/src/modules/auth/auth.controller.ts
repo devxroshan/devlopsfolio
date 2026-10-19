@@ -64,7 +64,7 @@ const signUp = async (handlerParams: RequestHandlerParams) => {
     });
   }
 
-  const verificationLink = `${env.FRONTEND}/email-verification?token=${verificationSession?.id}`;
+  const verificationLink = `${env.FRONTEND}/auth?tab=verification&token=${verificationSession?.id}`;
 
   const verificationHtml = await renderTemplate("email-verification.html", {
     appName: process.env.APP_NAME as string,
