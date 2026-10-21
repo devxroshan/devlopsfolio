@@ -60,6 +60,9 @@ import {
 import { ApiError } from "next/dist/server/api-utils";
 import { schemaValidator } from "../utils/schema-validator";
 
+// wrappers
+import AuthNotRequired from "../wrapper/AuthNotRequired";
+
 const tabs = [
   { name: "Sign Up", matcher: ETabs.SIGN_UP },
   { name: "Sign In", matcher: ETabs.SIGN_IN },
@@ -1279,7 +1282,9 @@ const Auth = () => {
     <Suspense
       fallback={<div className="w-screen h-screen bg-canvas text-white"></div>}
     >
-      <AuthContent />
+      <AuthNotRequired>
+        <AuthContent />
+      </AuthNotRequired>
     </Suspense>
   );
 };

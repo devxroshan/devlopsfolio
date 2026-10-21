@@ -55,3 +55,7 @@ export const ResetPasswordAPI = async (data: ResetPasswordInfo) => {
 export const RequestNewVerificationSessionAPI = async (data: SignUpInfo) => {
   return await api.patch("/auth/new-verification-session", data);
 };
+
+export const IsSignedInAPI = async () => {
+  return await api.get<APISuccess, APISuccess>("/auth/is-signed-in");
+};
