@@ -18,6 +18,7 @@ import { DeveloperProfile } from "../../models/developer-profile.model.js";
 import {
   BadRequestException,
   NotFoundException,
+  UnauthorizedException,
 } from "../../config/http-exceptions.js";
 
 // libs
@@ -348,6 +349,19 @@ const resetPassword = async (handler: RequestHandlerParams) => {
   };
 };
 
+const isSignedIn = async (handler: RequestHandlerParams) => {
+  if (!handler.req.user) {
+    throw new UnauthorizedException(
+      "You are unauthorized to perform this operation.",
+    );
+  }
+
+  return {
+    ok: true,
+    msg: "Authorized.",
+  };
+};
+
 export const SignUp = asyncRequestHandler(signUp, {
   allowMongooseSession: true,
 });
@@ -358,3 +372,4 @@ export const RequestNewVerificationSession = asyncRequestHandler(
 );
 export const ForgotPassword = asyncRequestHandler(forgotPassword);
 export const ResetPassword = asyncRequestHandler(resetPassword);
+export const IsSignedIn = asyncRequestHandler(isSignedIn);
