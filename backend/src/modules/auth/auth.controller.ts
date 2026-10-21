@@ -351,14 +351,17 @@ const resetPassword = async (handler: RequestHandlerParams) => {
 
 const isSignedIn = async (handler: RequestHandlerParams) => {
   if (!handler.req.user) {
-    throw new UnauthorizedException(
-      "You are unauthorized to perform this operation.",
-    );
+    return {
+      ok: true,
+      msg: "Not signed in.",
+      data: false,
+    };
   }
 
   return {
     ok: true,
-    msg: "Authorized.",
+    msg: "Signed in.",
+    data: true,
   };
 };
 
