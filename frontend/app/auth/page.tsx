@@ -545,7 +545,7 @@ const SignIn = ({
 
   useEffect(() => {
     if (signInMutation.data?.ok) {
-      router.push("/home");
+      router.push("/portfolio-skills");
     }
   }, [signInMutation]);
 

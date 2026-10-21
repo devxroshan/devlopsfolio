@@ -11,7 +11,7 @@ const AuthNotRequired = ({ children }: { children: React.ReactNode }) => {
     mutationFn: IsSignedInAPI,
     onSuccess: (data) => {
       if (data.data) {
-        router.push("/home");
+        router.push("/portfolio-skills");
       }
     },
     onError: (err) => {

@@ -1,10 +1,11 @@
 import AuthRequired from "../wrapper/AuthRequired";
+import Navbar from "../components/Navbar";
 
 const Home = () => {
   return (
     <>
       <AuthRequired>
-        <div>Home</div>
+        <Navbar/>
       </AuthRequired>
     </>
   );
