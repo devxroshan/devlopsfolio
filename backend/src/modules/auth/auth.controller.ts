@@ -350,10 +350,42 @@ const resetPassword = async (handler: RequestHandlerParams) => {
 };
 
 const isSignedIn = async (handler: RequestHandlerParams) => {
-  if (!handler.req.user) {
+  const accessToken = handler.req.cookies[APP_CONSTANTS.AUTH_COOKIE_NAME];
+
+  if (!accessToken) {
     return {
       ok: true,
-      msg: "Not signed in.",
+      msg: "Not Signed in.",
+      data: false,
+    };
+  }
+
+  const isValidAccessToken = jwt.verify(accessToken, env.JWT_SECRET) as {
+    sub: string;
+  };
+
+  if (!isValidAccessToken.sub || typeof isValidAccessToken.sub !== "string") {
+    return {
+      ok: true,
+      msg: "Not Signed in.",
+      data: false,
+    };
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(isValidAccessToken.sub)) {
+    return {
+      ok: true,
+      msg: "Not Signed in.",
+      data: false,
+    };
+  }
+
+  const isUser = await User.findById(isValidAccessToken.sub);
+
+  if (!isUser) {
+    return {
+      ok: true,
+      msg: "User not found. Please login.",
       data: false,
     };
   }

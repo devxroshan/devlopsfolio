@@ -28,6 +28,6 @@ router.patch("/verify-email", schemaValidator({ body: verifyEmailSchema }), Veri
 router.patch("/new-verification-session", schemaValidator({ query: newVerificationSession }), RequestNewVerificationSession);
 router.get("/forgot-password",schemaValidator({ query: forgotPasswordSchema }), ForgotPassword);
 router.patch("/reset-password", schemaValidator({ body: resetPasswordSchema }), ResetPassword);
-router.get("/is-signed-in", isAuthenticated, IsSignedIn)
+router.get("/is-signed-in", IsSignedIn)
 
 export default router;
