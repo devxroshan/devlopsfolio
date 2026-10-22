@@ -302,12 +302,11 @@ const forgotPassword = async (handler: RequestHandlerParams) => {
 };
 
 const resetPassword = async (handler: RequestHandlerParams) => {
-  const { newPassword, confirmPassword } = handler.req.body as {
+  const { newPassword, confirmPassword, token } = handler.req.body as {
     newPassword: string;
     confirmPassword: string;
+    token: string;
   };
-
-  const token = handler.req.query.token as string;
 
   if (!token) {
     throw new BadRequestException("Token is required.");

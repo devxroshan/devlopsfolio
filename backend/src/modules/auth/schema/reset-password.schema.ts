@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { z } from "zod";
 
 export const resetPasswordSchema = z
@@ -12,6 +13,9 @@ export const resetPasswordSchema = z
     confirmPassword: z
       .string()
       .min(8, "Confirm password must be at least 8 characters"),
+    token: z.string().refine((data) => !mongoose.Types.ObjectId.isValid(data), {
+      message: "Invalid token.",
+    }),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
