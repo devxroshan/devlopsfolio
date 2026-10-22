@@ -20,7 +20,7 @@ export const checkEnv = () => {
 export const env = {
   isDevelopment: (process.env.NODE_ENV as string) == "dev",
   PORT: Number(process.env.PORT),
-  SMPT_USER: process.env.SMTP_USER!,
+  SMTP_USER: process.env.SMTP_USER!,
   SMTP_PASS: process.env.SMTP_PASS!,
   JWT_SECRET: process.env.JWT_SECRET!,
   FRONTEND: process.env.FRONTEND!,
