@@ -23,41 +23,45 @@ checkEnv();
 const app = express();
 const port = Number(process.env.PORT as string) || 8000;
 
-connectDB();
+const startServer = async () => {
+  await connectDB();
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND || "http://localhost:3000",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  }),
-);
-app.use(helmet());
-app.use(cookieParser());
-app.use(express.json());
+  app.use(
+    cors({
+      origin: process.env.FRONTEND || "http://localhost:3000",
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    }),
+  );
+  app.use(helmet());
+  app.use(cookieParser());
+  app.use(express.json());
 
-// Routes
-app.use("/api/v1/auth", authRoutes);
-app.use(
-  "/api/v1/developer-project",
-  isAuthenticated,
-  isAuthorized({ for_client: false }),
-  developerProjectRoutes,
-);
-app.use(
-  "/api/v1/skill",
-  isAuthenticated,
-  isAuthorized({ for_client: false }),
-  skillRoutes,
-);
+  // Routes
+  app.use("/api/v1/auth", authRoutes);
+  app.use(
+    "/api/v1/developer-project",
+    isAuthenticated,
+    isAuthorized({ for_client: false }),
+    developerProjectRoutes,
+  );
+  app.use(
+    "/api/v1/skill",
+    isAuthenticated,
+    isAuthorized({ for_client: false }),
+    skillRoutes,
+  );
 
-// dev case
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.send("Welcome to the Devlopsfolio API");
-});
+  // dev case
+  app.get("/", (req: express.Request, res: express.Response) => {
+    res.send("Welcome to the Devlopsfolio API");
+  });
 
-app.use(allExceptionFilter);
+  app.use(allExceptionFilter);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+};
+
+startServer();
