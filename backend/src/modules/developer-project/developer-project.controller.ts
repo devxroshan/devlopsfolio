@@ -105,7 +105,7 @@ const deleteProject = async (handler: RequestHandlerParams) => {
     _id: projectId,
   });
 
-  if (!isDeleted) {
+  if (isDeleted.deletedCount === 0) {
     throw new NotFoundException("Project not found.");
   }
 
