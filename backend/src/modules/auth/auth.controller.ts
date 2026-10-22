@@ -330,7 +330,7 @@ const resetPassword = async (handler: RequestHandlerParams) => {
     throw new NotFoundException("User not found.");
   }
 
-  const hashedPassword = await argon2.hash(confirmPassword);
+  const hashedPassword = await argon2.hash(newPassword);
 
   await User.updateOne(
     { _id: isUser.id },
