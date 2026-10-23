@@ -7,7 +7,6 @@ export const developerProfileSchema = z.object({
   availability: EAvailability,
   experience_years: z.number(),
   location: z.string(),
-  time_zone: z.string(),
   title: z.string(),
   discipline: z.string(),
 });
