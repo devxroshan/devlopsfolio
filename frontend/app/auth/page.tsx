@@ -90,6 +90,9 @@ const developerDefaults = {
   hourly_rate_rupees: 0,
 };
 
+const worldTimeZones = Intl.supportedValuesOf("timeZone");
+console.log(worldTimeZones);
+
 const SignUp = ({
   setCurrentTab,
   userInfo,
@@ -352,40 +355,7 @@ const SignUp = ({
                       }}
                     />
                   </div>
-                  <div className="w-full h-fit flex gap-1 items-center justify-between">
-                    <Input
-                      variant="primary"
-                      label="Time Zone"
-                      hint="e.g Asia/Kolkata (UTC+5:30)"
-                      value={userInfo.time_zone}
-                      error={
-                        getLocalFieldErr(
-                          "time_zone",
-                          signUpMutation.error as LocalAppError,
-                        )?.msg ?? ""
-                      }
-                      leadingIcon={Clock}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, time_zone: e.target.value });
-                      }}
-                    />
-                    <Input
-                      variant="primary"
-                      label="Location"
-                      hint="e.g Bengaluru, India"
-                      value={userInfo.location}
-                      error={
-                        getLocalFieldErr(
-                          "location",
-                          signUpMutation.error as LocalAppError,
-                        )?.msg ?? ""
-                      }
-                      leadingIcon={LocateIcon}
-                      onChange={(e) => {
-                        setUserInfo({ ...userInfo, location: e.target.value });
-                      }}
-                    />
-                  </div>
+
                   <div className="w-full h-fit flex gap-1 items-center justify-between">
                     <Input
                       variant="number"
@@ -421,6 +391,24 @@ const SignUp = ({
                           ...userInfo,
                           hourly_rate_rupees: Number(e.target.value),
                         });
+                      }}
+                    />
+                  </div>
+                  <div className="w-full h-fit flex gap-1 items-center justify-between">
+                    <Input
+                      variant="primary"
+                      label="Location"
+                      hint="e.g Bengaluru, India"
+                      value={userInfo.location}
+                      error={
+                        getLocalFieldErr(
+                          "location",
+                          signUpMutation.error as LocalAppError,
+                        )?.msg ?? ""
+                      }
+                      leadingIcon={LocateIcon}
+                      onChange={(e) => {
+                        setUserInfo({ ...userInfo, location: e.target.value });
                       }}
                     />
                   </div>
