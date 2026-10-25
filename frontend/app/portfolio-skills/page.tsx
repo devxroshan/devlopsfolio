@@ -1,10 +1,26 @@
+"use client";
+import { useState } from "react";
+
 import AuthRequired from "../wrapper/AuthRequired";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
+import Input from "../components/Input";
 
-import { EyeIcon, Save } from "lucide-react";
+import { disciplineOptions } from "../auth/page";
 
-const Home = () => {
+import { EyeIcon, Save, UserIcon } from "lucide-react";
+import { Developer, User } from "../auth/type";
+import { EAvailability } from "../auth/enums";
+
+const PortfolioAndSkills = () => {
+  type Profile = Omit<
+    User,
+    "profile_pic" | "is_client" | "password" | "is_email_verified" | "email"
+  > &
+    Developer & { bio: string };
+
+  const [profileInfo, setProfileInfo] = useState<Profile>({} as Profile);
+
   return (
     <>
       <AuthRequired>
@@ -39,10 +55,123 @@ const Home = () => {
           </div>
         </div>
 
-        
+        <section className="w-[70vw] h-fit px-6 py-3 border border-border-subtle rounded-xl bg-surface-subtle flex flex-col item-start justify-center gap-2 mx-auto mt-10 mb-2">
+          <div className="w-full h-fit py-2 text-text-dimmed text-sm border-b border-border-subtle flex items-end justify-start gap-1 select-none">
+            <UserIcon className="w-5" />
+            <span className="font-geist-mono font-medium">
+              CORE PROFILE & AVAILABILITY
+            </span>
+          </div>
+
+          <div className="w-full h-fit py-2 flex flex-col items-center justify-center gap-3 select-none">
+            <div className="w-full flex items-center justify-center gap-2">
+              <Input
+                variant="primary"
+                label="Full Name"
+                value={profileInfo.name}
+                onChange={(e) =>
+                  setProfileInfo({ ...profileInfo, name: e.target.value })
+                }
+              />
+              <Input
+                variant="primary"
+                label="Title"
+                value={profileInfo.title}
+                onChange={(e) =>
+                  setProfileInfo({ ...profileInfo, title: e.target.value })
+                }
+              />
+            </div>
+            <div className="w-full flex items-center justify-center gap-2">
+              <Input
+                variant="primary"
+                label="Discipline"
+                value={profileInfo.name}
+                onChange={(e) =>
+                  setProfileInfo({ ...profileInfo, discipline: e.target.value })
+                }
+              />
+              <Input
+                variant="number"
+                label="Hourly Rate (₹/hr)"
+                value={profileInfo.hourly_rate_rupees}
+                min={100}
+                onChange={(e) =>
+                  setProfileInfo({
+                    ...profileInfo,
+                    hourly_rate_rupees: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div className="w-full flex items-center justify-center gap-2">
+              <Input
+                variant="select"
+                label="Availability"
+                value={profileInfo.availability}
+                options={disciplineOptions}
+                onChange={(e) =>
+                  setProfileInfo({
+                    ...profileInfo,
+                    availability: e.target.value as EAvailability,
+                  })
+                }
+              />
+              <Input
+                variant="number"
+                label="Years of Experience"
+                value={profileInfo.experience_years}
+                min={1}
+                onChange={(e) =>
+                  setProfileInfo({
+                    ...profileInfo,
+                    experience_years: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div className="w-full flex items-center justify-center gap-2">
+              <Input
+                variant="primary"
+                label="Location"
+                value={profileInfo.location}
+                onChange={(e) =>
+                  setProfileInfo({
+                    ...profileInfo,
+                    location: e.target.value,
+                  })
+                }
+              />
+              <Input
+                variant="primary"
+                label="Company"
+                value={profileInfo.company}
+                onChange={(e) =>
+                  setProfileInfo({
+                    ...profileInfo,
+                    company: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="w-full flex items-center justify-center gap-2">
+              <Input
+                variant="textarea"
+                label="Bio & Summary"
+                value={profileInfo.bio}
+                onChange={(e) =>
+                  setProfileInfo({
+                    ...profileInfo,
+                    bio: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+        </section>
       </AuthRequired>
     </>
   );
 };
 
-export default Home;
+export default PortfolioAndSkills;

@@ -13,7 +13,6 @@ export type User = {
 export type Developer = {
   discipline: string;
   title: string;
-  time_zone: string;
   location: string;
   experience_years: number;
   availability: EAvailability;

@@ -63,6 +63,69 @@ import { schemaValidator } from "../utils/schema-validator";
 // wrappers
 import AuthNotRequired from "../wrapper/AuthNotRequired";
 
+export const disciplineOptions = [
+  {
+    label: "Frontend Development",
+    value: "Frontend Development",
+  },
+  {
+    label: "Backend Development",
+    value: "Backend Development",
+  },
+  {
+    label: "Full-stack Development",
+    value: "Full-stack Development",
+  },
+  {
+    label: "Mobile App Development",
+    value: "Mobile App Development",
+  },
+  {
+    label: "Game Development",
+    value: "Game Development",
+  },
+  {
+    label: "DevOps & Site Reliability Engineering",
+    value: "DevOps & Site Reliability Engineering",
+  },
+  {
+    label: "Cloud Engineering",
+    value: "Cloud Engineering",
+  },
+  {
+    label: "Data Engineering",
+    value: "Data Engineering",
+  },
+  {
+    label: "AI & Machine Learning Engineering",
+    value: "AI & Machine Learning Engineering",
+  },
+  {
+    label: "Cybersecurity Engineering",
+    value: "Cybersecurity Engineering",
+  },
+  {
+    label: "Software Testing & Quality Assurance",
+    value: "Software Testing & Quality Assurance",
+  },
+  {
+    label: "Embedded Systems Engineering",
+    value: "Embedded Systems Engineering",
+  },
+  {
+    label: "Database Engineering",
+    value: "Database Engineering",
+  },
+  {
+    label: "Platform Engineering",
+    value: "Platform Engineering",
+  },
+  {
+    label: "Blockchain Development",
+    value: "Blockchain Development",
+  },
+];
+
 const tabs = [
   { name: "Sign Up", matcher: ETabs.SIGN_UP },
   { name: "Sign In", matcher: ETabs.SIGN_IN },
@@ -266,68 +329,7 @@ const SignUp = ({
                         )?.msg ?? ""
                       }
                       hint="e.g Full-stack Development"
-                      options={[
-                        {
-                          label: "Frontend Development",
-                          value: "Frontend Development",
-                        },
-                        {
-                          label: "Backend Development",
-                          value: "Backend Development",
-                        },
-                        {
-                          label: "Full-stack Development",
-                          value: "Full-stack Development",
-                        },
-                        {
-                          label: "Mobile App Development",
-                          value: "Mobile App Development",
-                        },
-                        {
-                          label: "Game Development",
-                          value: "Game Development",
-                        },
-                        {
-                          label: "DevOps & Site Reliability Engineering",
-                          value: "DevOps & Site Reliability Engineering",
-                        },
-                        {
-                          label: "Cloud Engineering",
-                          value: "Cloud Engineering",
-                        },
-                        {
-                          label: "Data Engineering",
-                          value: "Data Engineering",
-                        },
-                        {
-                          label: "AI & Machine Learning Engineering",
-                          value: "AI & Machine Learning Engineering",
-                        },
-                        {
-                          label: "Cybersecurity Engineering",
-                          value: "Cybersecurity Engineering",
-                        },
-                        {
-                          label: "Software Testing & Quality Assurance",
-                          value: "Software Testing & Quality Assurance",
-                        },
-                        {
-                          label: "Embedded Systems Engineering",
-                          value: "Embedded Systems Engineering",
-                        },
-                        {
-                          label: "Database Engineering",
-                          value: "Database Engineering",
-                        },
-                        {
-                          label: "Platform Engineering",
-                          value: "Platform Engineering",
-                        },
-                        {
-                          label: "Blockchain Development",
-                          value: "Blockchain Development",
-                        },
-                      ]}
+                      options={disciplineOptions}
                       onChange={(e) => {
                         setUserInfo({
                           ...userInfo,
