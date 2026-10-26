@@ -153,9 +153,6 @@ const developerDefaults = {
   hourly_rate_rupees: 0,
 };
 
-const worldTimeZones = Intl.supportedValuesOf("timeZone");
-console.log(worldTimeZones);
-
 const SignUp = ({
   setCurrentTab,
   userInfo,
