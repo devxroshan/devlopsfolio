@@ -10,10 +10,12 @@ export type ButtonVariant =
   | "success"
   | "link";
 
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonSize = "xs" | "sm" | "md" | "lg";
 
-export interface ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className"> {
+export interface ButtonProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "className"
+> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   btnText?: string;
@@ -106,7 +108,11 @@ const PALETTES: Record<ButtonVariant, Palette> = {
 const BARE_VARIANTS: ButtonVariant[] = ["transparent", "link"];
 const FILLED_BY_DEFAULT: ButtonVariant[] = ["primary", "secondary"];
 
-const SIZES: Record<ButtonSize, { text: string; box: string; iconOnly: string; icon: string }> = {
+const SIZES: Record<
+  ButtonSize,
+  { text: string; box: string; iconOnly: string; icon: string }
+> = {
+  xs: { text: "text-xs", box: "py-0.5 px-2", iconOnly: "p-1", icon: "w-3" },
   sm: { text: "text-xs", box: "py-1 px-3", iconOnly: "p-1.5", icon: "w-4" },
   md: { text: "text-sm", box: "py-1.5 px-4", iconOnly: "p-2", icon: "w-5" },
   lg: { text: "text-base", box: "py-2.5 px-6", iconOnly: "p-3", icon: "w-6" },
@@ -195,7 +201,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...rest}
       >
         {isLoading ? (
-          <Loader2 className={join(iconClass, "animate-spin")} aria-hidden="true" />
+          <Loader2
+            className={join(iconClass, "animate-spin")}
+            aria-hidden="true"
+          />
         ) : (
           renderIcon(LeadingIcon)
         )}
@@ -210,15 +219,23 @@ Button.displayName = "Button";
 
 export default Button;
 
-
-type IconButtonProps = Omit<ButtonProps, "btnText" | "leadingIcon" | "trailingIcon" | "ariaLabel"> & {
+type IconButtonProps = Omit<
+  ButtonProps,
+  "btnText" | "leadingIcon" | "trailingIcon" | "ariaLabel"
+> & {
   icon: LucideIcon;
   ariaLabel: string;
 };
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ icon, variant = "secondary", fullWidth = false, ...props }, ref) => (
-    <Button ref={ref} variant={variant} fullWidth={fullWidth} leadingIcon={icon} {...props} />
+    <Button
+      ref={ref}
+      variant={variant}
+      fullWidth={fullWidth}
+      leadingIcon={icon}
+      {...props}
+    />
   ),
 );
 

@@ -5,12 +5,16 @@ import AuthRequired from "../wrapper/AuthRequired";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import SkillCard from "./components/skill-card";
+
 
 import { disciplineOptions } from "../auth/page";
 
-import { EyeIcon, Save, UserIcon } from "lucide-react";
+import { EyeIcon, Save, UserIcon, FileStack, Plus } from "lucide-react";
 import { Developer, User } from "../auth/type";
 import { EAvailability } from "../auth/enums";
+import { Skill } from "./type";
+import { SkillProficiency } from "./enum";
 
 const PortfolioAndSkills = () => {
   type Profile = Omit<
@@ -20,6 +24,10 @@ const PortfolioAndSkills = () => {
     Developer & { bio: string };
 
   const [profileInfo, setProfileInfo] = useState<Profile>({} as Profile);
+  const [skillInfo, setSkillInfo] = useState<Skill>({
+    skill_name: "",
+    years_of_experience: 0,
+  } as Skill);
 
   return (
     <>
@@ -55,6 +63,7 @@ const PortfolioAndSkills = () => {
           </div>
         </div>
 
+        {/* Profile & Availability */}
         <section className="w-[70vw] h-fit px-6 py-3 border border-border-subtle rounded-xl bg-surface-subtle flex flex-col item-start justify-center gap-2 mx-auto mt-10 mb-2">
           <div className="w-full h-fit py-2 text-text-dimmed text-sm border-b border-border-subtle flex items-end justify-start gap-1 select-none">
             <UserIcon className="w-5" />
@@ -86,7 +95,7 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="primary"
                 label="Discipline"
-                value={profileInfo.name}
+                value={profileInfo.discipline}
                 onChange={(e) =>
                   setProfileInfo({ ...profileInfo, discipline: e.target.value })
                 }
@@ -95,7 +104,7 @@ const PortfolioAndSkills = () => {
                 variant="number"
                 label="Hourly Rate (₹/hr)"
                 value={profileInfo.hourly_rate_rupees}
-                min={100}
+                min={1}
                 onChange={(e) =>
                   setProfileInfo({
                     ...profileInfo,
@@ -165,6 +174,83 @@ const PortfolioAndSkills = () => {
                     bio: e.target.value,
                   })
                 }
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Skills */}
+        <section className="w-[70vw] h-fit px-6 py-3 border border-border-subtle rounded-xl bg-surface-subtle flex flex-col item-start justify-center gap-2 mx-auto mt-10 mb-2">
+          <div className="w-full h-fit py-2 text-text-dimmed text-sm border-b border-border-subtle flex items-end justify-start gap-1 select-none">
+            <FileStack className="w-5" />
+            <span className="font-geist-mono font-medium">
+              TECHNICAL SKILLS
+            </span>
+          </div>
+
+          <div className="grid w-full h-fit grid-cols-3 items-start gap-2">
+            <SkillCard/>
+            <SkillCard/>
+            <SkillCard/>
+            <SkillCard/>
+            <SkillCard/>
+            <SkillCard/>
+            <SkillCard/>
+            <SkillCard/>
+            <SkillCard/>
+          </div>
+
+          <div className="w-full h-fit px-2 py-2 border border-border-subtle bg-surface-elevated rounded-lg flex flex-col gap-1.5 items-start justify-center">
+            <span className="text-xs text-text-dimmed font-medium">
+              Add Skill:
+            </span>
+
+            <div className="w-full flex items-center justify-between gap-2 h-fit">
+              <Input
+                variant="primary"
+                label=""
+                value={skillInfo.skill_name}
+                hint="Skill name"
+                onChange={(e) =>
+                  setSkillInfo({ ...skillInfo, skill_name: e.target.value })
+                }
+              />
+              <Input
+                variant="select"
+                label=""
+                value={skillInfo.proficiency}
+                hint="Proficiency"
+                options={[
+                  { label: "Expert", value: "expert" },
+                  { label: "Intermediate", value: "intermediate" },
+                  { label: "Beginner", value: "beginner" },
+                ]}
+                onChange={(e) =>
+                  setSkillInfo({
+                    ...skillInfo,
+                    proficiency: e.target.value as SkillProficiency,
+                  })
+                }
+              />
+              <Input
+                variant="number"
+                label=""
+                value={skillInfo.years_of_experience}
+                min={1}
+                hint="Experience"
+                onChange={(e) =>
+                  setSkillInfo({
+                    ...skillInfo,
+                    years_of_experience: Number(e.target.value),
+                  })
+                }
+              />
+
+              <Button
+                variant="primary"
+                btnText="Add Skill"
+                size="xs"
+                leadingIcon={Plus}
               />
             </div>
           </div>
