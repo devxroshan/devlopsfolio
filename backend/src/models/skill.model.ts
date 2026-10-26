@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 enum ELevel {
-  ADVANCE = "Advance",
+  EXPERT = "expert",
   INTERMEDIATE = "Intermediate",
   BEGINNER = "beginner",
 }
