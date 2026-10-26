@@ -17,6 +17,7 @@ export interface SelectOption {
 interface BaseProps {
   label: string;
   hint?: string;
+  bgColor?: string;
   helperText?: string;
   error?: string;
   size?: InputSize;
@@ -97,6 +98,7 @@ const Input = forwardRef<
     value,
     id,
     name,
+    bgColor,
     required,
     isDisabled = false,
     readOnly,
@@ -127,8 +129,9 @@ const Input = forwardRef<
   );
 
   const boxClass = join(
-    "w-full flex gap-2 px-2.5 rounded-lg border bg-surface-subtle",
+    "w-full flex gap-2 px-2.5 rounded-lg border",
     "transition-all duration-300 focus-within:ring-2 focus-within:ring-white/10",
+    bgColor ? bgColor : "bg-surface-subtle",
     isTextarea ? "items-start py-2" : join("items-center", sizing.box),
     error
       ? "border-red-500/60 focus-within:border-red-500"
@@ -210,7 +213,8 @@ const Input = forwardRef<
             onChange={props.onChange}
             className={join(
               fieldClass,
-              "appearance-none cursor-pointer bg-surface-subtle",
+              "appearance-none cursor-pointer",
+              bgColor ? bgColor : "bg-surface-subtle",
               value === "" && "text-text-dimmed",
             )}
           >
