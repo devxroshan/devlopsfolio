@@ -35,7 +35,9 @@ export const isAuthenticated = async (
       throw new BadRequestException("Invalid token subject.");
     }
 
-    const isUser = await User.findById(isValidAccessToken.sub);
+    const isUser = await User.findById(isValidAccessToken.sub).select(
+      "-password",
+    );
 
     if (!isUser) {
       throw new NotFoundException("User not found. Please login.");
