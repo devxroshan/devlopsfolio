@@ -8,13 +8,11 @@ const routes = [
   { name: "Portfolio & Skills", path: "/portfolio-skills" },
   { name: "Opportunities", path: "/opportunities" },
   { name: "Submitted Bids", path: "/submitted-bids" },
-  { name: "Messages", path: "messages" },
+  { name: "Messages", path: "/messages" },
 ];
 
 const Navbar = () => {
   const pathname = usePathname();
-
-  console.log(pathname);
 
   return (
     <nav className="w-full h-14 px-6 py-1 flex items-center justify-between gap-2 select-none border-b border-border-subtle">
@@ -42,10 +40,10 @@ const Navbar = () => {
 
       <div className="w-fit h-full flex items-center justify-center gap-2 border border-border-subtle rounded-md bg-surface-elevated px-1 py-2 cursor-pointer hover:bg-surface-hover transition-all duration-300">
         <div className="flex flex-col gap-0.5 items-start justify-center">
-          <span className="text-xs font-medium text-text-secondary">Roshan Kewat</span>
-          <span className="text-xs text-text-dimmed">
-            Developer
+          <span className="text-xs font-medium text-text-secondary">
+            Roshan Kewat
           </span>
+          <span className="text-xs text-text-dimmed">Developer</span>
         </div>
 
         <Image
