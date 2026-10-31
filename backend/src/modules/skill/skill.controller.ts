@@ -67,7 +67,7 @@ const editSkill = async (handler: RequestHandlerParams) => {
 };
 
 const deleteSkill = async (handler: RequestHandlerParams) => {
-  const skillId = handler.req.body.query.skill_id;
+  const skillId = handler.req.query.skill_id;
 
   const isDeleted = await Skill.findByIdAndDelete(skillId);
 

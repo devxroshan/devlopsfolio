@@ -9,8 +9,6 @@ import {
 } from "./skill.controller.js";
 import { editSkillSchema } from "./schema/edit-skill.schema.js";
 import { deleteSkillSchema } from "./schema/delete-skill.schema.js";
-import { isAuthenticated } from "../../middlewares/is-authenticated.js";
-import { isAuthorized } from "../../middlewares/is-authorized.js";
 
 const router = express.Router();
 
