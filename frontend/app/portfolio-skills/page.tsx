@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import AuthRequired from "../wrapper/AuthRequired";
 import Navbar from "../components/Navbar";
@@ -23,21 +24,83 @@ import { Developer, User } from "../auth/type";
 import { EAvailability } from "../auth/enums";
 import { Skill } from "./type";
 import { SkillProficiency } from "./enum";
+import { userStore } from "../stores/user-store";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AddSkillAPI, DeleteSkillAPI, GetAllSkillAPI } from "./skill.api";
+import { APISuccess } from "../types/api-success";
+import { LocalAppError } from "../types/local-error";
+import { APIError } from "../types/api-error";
+import { getLocalFieldErr } from "../utils/getLocalFieldErr";
+import { skillStore } from "../stores/skill-store";
+import { DeleteSkillSchema } from "./schema/delete-skill.schema";
 
 const PortfolioAndSkills = () => {
-  type Profile = Omit<
-    User,
-    "profile_pic" | "is_client" | "password" | "is_email_verified" | "email"
-  > &
-    Developer & { bio: string };
+  type DeveloperProfile = Developer & { bio: string };
+  type UserProfile = Omit<User, "password">;
 
-  const [profileInfo, setProfileInfo] = useState<Profile>({} as Profile);
+  const queryClient = useQueryClient();
+
+  const userStre = userStore();
+  const skillStre = skillStore();
+
+  const [userProfileInfo, setUserProfileInfo] = useState<UserProfile>(
+    {} as UserProfile,
+  );
+  const [developerProfileInfo, setDeveloperProfileInfo] =
+    useState<DeveloperProfile>({} as DeveloperProfile);
   const [skillInfo, setSkillInfo] = useState<Skill>({
-    skill_name: "",
-    years_of_experience: 0,
+    name: "",
+    experience_year: 0,
   } as Skill);
   const [isAddProject, setIsAddProject] = useState<boolean>(false);
   const [isAddRole, setIsAddRole] = useState<boolean>(false);
+
+  useEffect(() => {
+    setUserProfileInfo(userStre);
+  }, [userStre]);
+
+  const addSkillMutation = useMutation<
+    APISuccess,
+    LocalAppError | APIError,
+    Skill
+  >({
+    mutationFn: AddSkillAPI,
+    onSuccess: (data) => {
+      setSkillInfo({} as Skill);
+      queryClient.invalidateQueries({
+        queryKey: ["all-skill"],
+      });
+      console.log(data);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const deleteSkillMutation = useMutation<
+    APISuccess,
+    APIError | LocalAppError,
+    DeleteSkillSchema
+  >({
+    mutationFn: DeleteSkillAPI,
+    onSuccess: (data) => {},
+    onError: (err) => {},
+  });
+
+  const skillQuery = useQuery({
+    queryFn: GetAllSkillAPI,
+    queryKey: ["all-skill"],
+  });
+
+  useEffect(() => {
+    if (skillQuery.data?.data) {
+      skillStre.setSkill(skillQuery.data.data);
+    }
+  }, [skillQuery.data]);
+
+  const handleAddSkill = () => {
+    addSkillMutation.mutate(skillInfo);
+  };
 
   return (
     <>
@@ -77,7 +140,7 @@ const PortfolioAndSkills = () => {
         <section className="w-[70vw] h-fit px-6 py-3 border border-border-subtle rounded-xl bg-surface-subtle flex flex-col item-start justify-center gap-2 mx-auto mt-10 mb-2">
           <div className="w-full h-fit py-2 text-text-dimmed text-sm border-b border-border-subtle flex items-end justify-start gap-1 select-none">
             <UserIcon className="w-5" />
-            <span className="font-geist-mono font-medium">
+            <span className="font-geist-mono font-medium text-sm">
               CORE PROFILE & AVAILABILITY
             </span>
           </div>
@@ -87,17 +150,23 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="primary"
                 label="Full Name"
-                value={profileInfo.name}
+                value={userProfileInfo.name}
                 onChange={(e) =>
-                  setProfileInfo({ ...profileInfo, name: e.target.value })
+                  setUserProfileInfo({
+                    ...userProfileInfo,
+                    name: e.target.value,
+                  })
                 }
               />
               <Input
                 variant="primary"
                 label="Title"
-                value={profileInfo.title}
+                value={developerProfileInfo.title}
                 onChange={(e) =>
-                  setProfileInfo({ ...profileInfo, title: e.target.value })
+                  setDeveloperProfileInfo({
+                    ...developerProfileInfo,
+                    title: e.target.value,
+                  })
                 }
               />
             </div>
@@ -105,19 +174,22 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="primary"
                 label="Discipline"
-                value={profileInfo.discipline}
+                value={developerProfileInfo.discipline}
                 onChange={(e) =>
-                  setProfileInfo({ ...profileInfo, discipline: e.target.value })
+                  setDeveloperProfileInfo({
+                    ...developerProfileInfo,
+                    discipline: e.target.value,
+                  })
                 }
               />
               <Input
                 variant="number"
                 label="Hourly Rate (₹/hr)"
-                value={profileInfo.hourly_rate_rupees}
+                value={developerProfileInfo.hourly_rate_rupees}
                 min={1}
                 onChange={(e) =>
-                  setProfileInfo({
-                    ...profileInfo,
+                  setDeveloperProfileInfo({
+                    ...developerProfileInfo,
                     hourly_rate_rupees: Number(e.target.value),
                   })
                 }
@@ -127,11 +199,11 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="select"
                 label="Availability"
-                value={profileInfo.availability}
+                value={developerProfileInfo.availability}
                 options={disciplineOptions}
                 onChange={(e) =>
-                  setProfileInfo({
-                    ...profileInfo,
+                  setDeveloperProfileInfo({
+                    ...developerProfileInfo,
                     availability: e.target.value as EAvailability,
                   })
                 }
@@ -139,11 +211,11 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="number"
                 label="Years of Experience"
-                value={profileInfo.experience_years}
+                value={developerProfileInfo.experience_years}
                 min={1}
                 onChange={(e) =>
-                  setProfileInfo({
-                    ...profileInfo,
+                  setDeveloperProfileInfo({
+                    ...developerProfileInfo,
                     experience_years: Number(e.target.value),
                   })
                 }
@@ -153,10 +225,10 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="primary"
                 label="Location"
-                value={profileInfo.location}
+                value={developerProfileInfo.location}
                 onChange={(e) =>
-                  setProfileInfo({
-                    ...profileInfo,
+                  setDeveloperProfileInfo({
+                    ...developerProfileInfo,
                     location: e.target.value,
                   })
                 }
@@ -164,10 +236,10 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="primary"
                 label="Company"
-                value={profileInfo.company}
+                value={userProfileInfo.company}
                 onChange={(e) =>
-                  setProfileInfo({
-                    ...profileInfo,
+                  setUserProfileInfo({
+                    ...userProfileInfo,
                     company: e.target.value,
                   })
                 }
@@ -177,10 +249,10 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="textarea"
                 label="Bio & Summary"
-                value={profileInfo.bio}
+                value={developerProfileInfo.bio}
                 onChange={(e) =>
-                  setProfileInfo({
-                    ...profileInfo,
+                  setDeveloperProfileInfo({
+                    ...developerProfileInfo,
                     bio: e.target.value,
                   })
                 }
@@ -199,37 +271,49 @@ const PortfolioAndSkills = () => {
           </div>
 
           <div className="grid w-full h-fit grid-cols-3 items-start gap-2">
-            <SkillCard />
-            <SkillCard />
-            <SkillCard />
-            <SkillCard />
-            <SkillCard />
-            <SkillCard />
-            <SkillCard />
-            <SkillCard />
-            <SkillCard />
+            {skillStre.skills.length > 0 &&
+              skillStre.skills.map((skill) => (
+                <SkillCard
+                  key={skill._id}
+                  name={skill.name}
+                  years_of_experience={skill.experience_year}
+                  proficiency={skill.proficiency_level!}
+                  onDelete={() => {
+                    skillStre.removeSkill(skill._id);
+                    deleteSkillMutation.mutate({ skill_id: skill._id });
+                  }}
+                ></SkillCard>
+              ))}
           </div>
 
           <div className="w-full h-fit px-2 py-2 border border-border-subtle bg-surface-elevated rounded-lg flex flex-col gap-1.5 items-start justify-center">
-            <span className="text-xs text-text-dimmed font-medium">
-              Add Skill:
-            </span>
+            <div className="w-full h-fit  flex items-center justify-start gap-2">
+              <span className="text-xs text-text-dimmed font-medium">
+                Add Skill:
+              </span>
+
+              <span className="text-red-700 text-xs font-medium select-none">
+                {(addSkillMutation.error as LocalAppError) &&
+                  (addSkillMutation.error as LocalAppError).fieldErrors![0]
+                    ?.msg}
+              </span>
+            </div>
 
             <div className="w-full flex items-center justify-between gap-2 h-fit">
               <Input
                 variant="primary"
                 label=""
-                value={skillInfo.skill_name}
+                value={skillInfo.name}
                 hint="Skill name"
                 bgColor="bg-surface-hover"
                 onChange={(e) =>
-                  setSkillInfo({ ...skillInfo, skill_name: e.target.value })
+                  setSkillInfo({ ...skillInfo, name: e.target.value })
                 }
               />
               <Input
                 variant="select"
                 label=""
-                value={skillInfo.proficiency}
+                value={skillInfo.proficiency_level}
                 hint="Proficiency"
                 bgColor="bg-surface-hover"
                 options={[
@@ -240,21 +324,21 @@ const PortfolioAndSkills = () => {
                 onChange={(e) =>
                   setSkillInfo({
                     ...skillInfo,
-                    proficiency: e.target.value as SkillProficiency,
+                    proficiency_level: e.target.value as SkillProficiency,
                   })
                 }
               />
               <Input
                 variant="number"
                 label=""
-                value={skillInfo.years_of_experience}
+                value={skillInfo.experience_year}
                 min={1}
                 hint="Experience"
                 bgColor="bg-surface-hover"
                 onChange={(e) =>
                   setSkillInfo({
                     ...skillInfo,
-                    years_of_experience: Number(e.target.value),
+                    experience_year: Number(e.target.value),
                   })
                 }
               />
@@ -264,6 +348,7 @@ const PortfolioAndSkills = () => {
                 btnText="Add Skill"
                 size="xs"
                 leadingIcon={Plus}
+                onClick={() => handleAddSkill()}
               />
             </div>
           </div>

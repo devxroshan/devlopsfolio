@@ -103,7 +103,7 @@ const Input = forwardRef<
     isDisabled = false,
     readOnly,
     autoFocus,
-    autoComplete,
+    autoComplete = "off",
     onBlur,
     className,
   } = props;

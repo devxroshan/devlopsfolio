@@ -1,4 +1,4 @@
-export const enum SkillProficiency {
+export enum SkillProficiency {
   EXPERT = "expert",
   INTERMEDIATE = "intermediate",
   BEGINNER = "beginner",

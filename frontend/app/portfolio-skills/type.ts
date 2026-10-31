@@ -1,9 +1,9 @@
 import { SkillProficiency } from "./enum";
 
 export interface Skill {
-  skill_name: string;
-  years_of_experience: number;
-  proficiency: SkillProficiency;
+  name: string;
+  experience_year: number;
+  proficiency_level: SkillProficiency;
 }
 
 export interface Project {

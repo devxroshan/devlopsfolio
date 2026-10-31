@@ -4,6 +4,8 @@ import "./globals.css";
 
 import { QueryProvider } from "./providers/query.provider";
 
+import GetDetails from "./wrapper/GetDetails";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -31,7 +33,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistMono.variable} ${geistSans.variable} ${inter.variable} h-full antialiased`}
     >
       <body className={`min-h-full flex flex-col ${inter.className}`}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <GetDetails>{children}</GetDetails>
+        </QueryProvider>
       </body>
     </html>
   );
