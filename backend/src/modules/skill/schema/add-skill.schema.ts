@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const EProficiencyLevel = z.enum(["Advance", "Intermediate", "Beginner"]);
+export const EProficiencyLevel = z.enum(["Expert", "Intermediate", "Beginner"]);
 
 export const addSkillSchema = z.object({
   name: z.string("Must be string.").min(1, "Skill name is required."),
