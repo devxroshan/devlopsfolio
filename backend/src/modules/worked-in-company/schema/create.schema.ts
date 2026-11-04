@@ -5,6 +5,7 @@ export const createWorkedInCompanySchema = z.object({
   position: z.string().min(1, "Position is required"),
   start_year: z.number().min(1, "Start year is required"),
   end_year: z.number().optional(),
+  description: z.string().optional(),
 });
 
 export type CreateWorkedInCompanySchema = z.infer<

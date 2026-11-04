@@ -6,6 +6,7 @@ export interface IWorkedInCompany {
   position: string;
   start_year: number;
   end_year: number;
+  description?: string;
 }
 
 export interface IWorkedInCompanySchema extends IWorkedInCompany, Document {}
@@ -17,6 +18,7 @@ const workedInCompanySchema = new Schema<IWorkedInCompanySchema>(
     position: { type: String, required: true },
     start_year: { type: Number, required: true },
     end_year: { type: Number, required: true },
+    description: { type: String, default: "" },
   },
   { timestamps: true },
 );

@@ -7,7 +7,8 @@ import { WorkedInCompany } from "../../models/worked-in-company.model.js";
 import { NotFoundException } from "../../config/http-exceptions.js";
 
 const createWorkedInCompany = async (handler: RequestHandlerParams) => {
-  const { company_name, position, start_year, end_year } = handler.req.body;
+  const { company_name, position, start_year, end_year, description } =
+    handler.req.body;
 
   const newWorkedInCompany = await WorkedInCompany.create({
     user_id: handler.req.user?._id as string,
@@ -15,6 +16,7 @@ const createWorkedInCompany = async (handler: RequestHandlerParams) => {
     position,
     start_year,
     end_year,
+    description,
   });
 
   return {
