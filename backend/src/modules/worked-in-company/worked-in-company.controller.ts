@@ -31,6 +31,13 @@ const getAllWorkedInCompany = async (handler: RequestHandlerParams) => {
     user_id: handler.req.user?._id as string,
   });
 
+  if (workedInCompanies.length === 0) {
+    return {
+      ok: false,
+      msg: "No worked in companies found for this user",
+    };
+  }
+
   return {
     ok: true,
     msg: "Worked in companies retrieved successfully",
