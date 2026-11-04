@@ -1,22 +1,32 @@
 type ProjectCardProps = {
+  role: string;
+  company: string;
+  start_year: string;
+  end_year: string;
+  description?: string;
   onDelete?: () => void;
 };
 
-const RoleCard = ({ onDelete }: ProjectCardProps) => {
+const RoleCard = ({
+  role,
+  company,
+  start_year,
+  end_year,
+  description,
+  onDelete,
+}: ProjectCardProps) => {
   return (
     <article className="w-full rounded-xl border border-white/10 bg-[#111111] px-3 py-3 text-white shadow-sm select-none">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-sm font-semibold leading-5">
-            Staff Frontend Engineer{" "}
-            <span className="font-normal text-white/55">at</span> Veloce Data
-            Platforms
+            {role}
+            <span className="font-normal text-white/55"> at</span> {company}
           </h3>
-          <p className="text-xs leading-4 text-white/50">2022 - 2025</p>
-          <p className="text-xs leading-5 text-white/70">
-            Spearheaded migration to Next.js enterprise micro-frontends and
-            unified design tokens across 14 product squads.
+          <p className="text-xs leading-4 text-white/50">
+            {start_year} - {end_year}
           </p>
+          <p className="text-xs leading-5 text-white/70">{description}</p>
         </div>
         <button
           type="button"

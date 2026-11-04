@@ -19,7 +19,6 @@ import {
   FileStack,
   Plus,
   WorkflowIcon,
-  Divide,
 } from "lucide-react";
 import { Developer, User } from "../auth/type";
 import { EAvailability } from "../auth/enums";
@@ -28,6 +27,7 @@ import { SkillProficiency } from "./enum";
 import { useUserStore } from "../stores/user-store";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AddSkillAPI, DeleteSkillAPI, GetAllSkillAPI } from "./skill-api/api";
+import { AddRoleAPI, GetAllRolesAPI, DeleteRoleAPI } from "./role-api/api";
 import { APISuccess } from "../types/api-success";
 import { LocalAppError } from "../types/local-error";
 import { APIError } from "../types/api-error";
@@ -35,13 +35,16 @@ import { getLocalFieldErr } from "../utils/getLocalFieldErr";
 import { useSkillStore } from "../stores/skill-store";
 import { DeleteSkillSchema } from "./skill-api/schema/delete-skill.schema";
 import { AddProjectSchema } from "./project-api/schema/add-project.schema";
+import { CreateRoleSchema } from "./role-api/schema/create-role.schema";
 import {
   AddProjectAPI,
   DeleteProjectAPI,
   GetAllProjectAPI,
 } from "./project-api/api";
 import { useProjectStore } from "../stores/project-store";
+import { useRoleStore } from "../stores/role-store";
 import { DeleteProjectSchema } from "./project-api/schema/delete-project.schema";
+import { DeleteRoleSchema } from "./role-api/schema/delete-role.schema";
 
 const PortfolioAndSkills = () => {
   type DeveloperProfile = Developer & { bio: string };
@@ -52,6 +55,7 @@ const PortfolioAndSkills = () => {
   const userStre = useUserStore();
   const skillStre = useSkillStore();
   const projectStre = useProjectStore();
+  const roleStre = useRoleStore();
 
   const [userProfileInfo, setUserProfileInfo] = useState<UserProfile>(
     {} as UserProfile,
@@ -65,6 +69,9 @@ const PortfolioAndSkills = () => {
   const [newProjectInfo, setNewProjectInfo] = useState<AddProjectSchema>(
     {} as AddProjectSchema,
   );
+  const [newRoleInfo, setNewRoleInfo] = useState<CreateRoleSchema>({
+    end_year: 0,
+  } as CreateRoleSchema);
   const [isAddProject, setIsAddProject] = useState<boolean>(false);
   const [isAddRole, setIsAddRole] = useState<boolean>(false);
 
@@ -126,6 +133,41 @@ const PortfolioAndSkills = () => {
     },
   });
 
+  const addRoleMutation = useMutation<
+    APISuccess,
+    APIError | LocalAppError,
+    CreateRoleSchema
+  >({
+    mutationFn: AddRoleAPI,
+    onSuccess: (data) => {
+      setNewRoleInfo({} as CreateRoleSchema);
+      queryClient.invalidateQueries({
+        queryKey: ["all-developer-roles"],
+      });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const deleteRoleMutation = useMutation<
+    APISuccess,
+    APIError | LocalAppError,
+    DeleteRoleSchema
+  >({
+    mutationFn: DeleteRoleAPI,
+    onSuccess: (data) => {
+      if (data.ok) {
+        queryClient.invalidateQueries({
+          queryKey: ["all-developer-roles"],
+        });
+      }
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const skillQuery = useQuery({
     queryFn: GetAllSkillAPI,
     queryKey: ["all-skill"],
@@ -136,6 +178,11 @@ const PortfolioAndSkills = () => {
     queryKey: ["all-developer-project"],
   });
 
+  const roleQuery = useQuery({
+    queryFn: GetAllRolesAPI,
+    queryKey: ["all-developer-roles"],
+  });
+
   useEffect(() => {
     if (skillQuery.data?.data) {
       skillStre.setSkill(skillQuery.data.data);
@@ -143,11 +190,10 @@ const PortfolioAndSkills = () => {
     if (projectQuery.data?.data) {
       projectStre.setProjects(projectQuery.data.data);
     }
-  }, [skillQuery.data, projectQuery.data]);
-
-  const handleAddSkill = () => {
-    addSkillMutation.mutate(skillInfo);
-  };
+    if (roleQuery.data?.data) {
+      roleStre.setRoles(roleQuery.data.data);
+    }
+  }, [skillQuery.data, projectQuery.data, roleQuery.data]);
 
   return (
     <>
@@ -333,6 +379,12 @@ const PortfolioAndSkills = () => {
               ))}
           </div>
 
+          {!skillStre.skills.length && (
+            <div className="text-sm text-text-muted py-6 flex flex-col items-center justify-center gap-2 w-full">
+              No skills yet.
+            </div>
+          )}
+
           <div className="w-full h-fit px-2 py-2 border border-border-subtle bg-surface-elevated rounded-lg flex flex-col gap-1.5 items-start justify-center">
             <div className="w-full h-fit  flex items-center justify-start gap-2">
               <span className="text-xs text-text-dimmed font-medium">
@@ -395,7 +447,7 @@ const PortfolioAndSkills = () => {
                 btnText="Add Skill"
                 size="xs"
                 leadingIcon={Plus}
-                onClick={() => handleAddSkill()}
+                onClick={() => addSkillMutation.mutate(skillInfo)}
               />
             </div>
           </div>
@@ -625,51 +677,154 @@ const PortfolioAndSkills = () => {
           </div>
 
           <div className="w-full flex flex-col items-center justify-start gap-2">
-            <RoleCard></RoleCard>
+            {roleStre.roles.length > 0 &&
+              roleStre.roles.map((role) => (
+                <RoleCard
+                  key={role._id}
+                  role={role.role}
+                  company={role.company_name}
+                  start_year={role.start_year.toString()}
+                  end_year={
+                    role.end_year === 0 ? "Present" : role.end_year.toString()
+                  }
+                  description={role.description}
+                  onDelete={() => {
+                    roleStre.removeRole(role._id);
+                    deleteRoleMutation.mutate({
+                      worked_in_company_id: role._id,
+                    });
+                  }}
+                />
+              ))}
+
+            {!roleStre.roles.length && (
+              <div className="text-sm text-text-muted py-6 flex flex-col items-center justify-center gap-2">
+                No roles yet.
+                <Button
+                  variant="primary"
+                  btnText="Add Role"
+                  size="xs"
+                  className="rounded-md"
+                  onClick={() => setIsAddRole(true)}
+                />
+              </div>
+            )}
           </div>
 
           {isAddRole && (
-            <div className="w-full bg-surface-elevated px-3 py-3 rounded-2xl border border-border-subtle flex flex-col items-center justify-start gap-2">
+            <div
+              className="w-full bg-surface-elevated px-3 py-3 rounded-2xl border border-border-subtle flex flex-col items-center justify-start gap-2"
+              onKeyDown={(e) => {
+                e.key == "Enter" && addRoleMutation.mutate(newRoleInfo);
+              }}
+            >
               <div className="grid grid-cols-2 gap-2 items-start w-full">
                 <Input
                   variant="primary"
                   label="Company"
-                  value={""}
+                  value={newRoleInfo.company_name}
+                  error={
+                    getLocalFieldErr(
+                      "company_name",
+                      addRoleMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
                   bgColor="bg-surface-hover"
-                  onChange={() => {}}
+                  onChange={(e) =>
+                    setNewRoleInfo({
+                      ...newRoleInfo,
+                      company_name: e.target.value,
+                    })
+                  }
                 />
                 <Input
                   variant="primary"
                   label="Role"
-                  value={""}
+                  value={newRoleInfo.role}
+                  error={
+                    getLocalFieldErr(
+                      "role",
+                      addRoleMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
                   bgColor="bg-surface-hover"
-                  onChange={() => {}}
+                  onChange={(e) =>
+                    setNewRoleInfo({
+                      ...newRoleInfo,
+                      role: e.target.value,
+                    })
+                  }
                 />
                 <Input
                   variant="number"
                   label="From"
-                  value={""}
+                  value={newRoleInfo.start_year?.toString()}
+                  error={
+                    getLocalFieldErr(
+                      "start_year",
+                      addRoleMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
                   bgColor="bg-surface-hover"
                   min={1900}
-                  onChange={() => {}}
+                  onChange={(e) =>
+                    setNewRoleInfo({
+                      ...newRoleInfo,
+                      start_year: parseInt(e.target.value),
+                    })
+                  }
                 />
                 <Input
                   variant="number"
                   label="To"
-                  value={""}
+                  value={newRoleInfo.end_year?.toString() ?? 0}
+                  error={
+                    getLocalFieldErr(
+                      "end_year",
+                      addRoleMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
                   bgColor="bg-surface-hover"
                   min={1900}
-                  onChange={() => {}}
+                  onChange={(e) =>
+                    setNewRoleInfo({
+                      ...newRoleInfo,
+                      end_year: parseInt(e.target.value) || 0,
+                    })
+                  }
                 />
               </div>
-              <div className="w-xs flex items-center justify-center ml-auto gap-2">
+              <Input
+                variant="textarea"
+                label="Description"
+                value={newRoleInfo.description || ""}
+                error={
+                  getLocalFieldErr(
+                    "description",
+                    addRoleMutation.error as LocalAppError,
+                  )?.msg ?? ""
+                }
+                bgColor="bg-surface-hover"
+                onChange={(e) =>
+                  setNewRoleInfo({
+                    ...newRoleInfo,
+                    description: e.target.value || "",
+                  })
+                }
+              />
+              <div className="w-xs flex items-center justify-center ml-auto gap-2 mt-4">
                 <Button
                   variant="secondary"
                   btnText="Cancel"
                   size="sm"
                   onClick={() => setIsAddRole(false)}
                 />
-                <Button variant="primary" btnText="Save Role" size="sm" />
+                <Button
+                  variant="primary"
+                  btnText="Save Role"
+                  size="sm"
+                  onClick={() => addRoleMutation.mutate(newRoleInfo)}
+                />
               </div>
             </div>
           )}
