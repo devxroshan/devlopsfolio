@@ -32,6 +32,10 @@ const developerProjectSchema = new Schema<IDeveloperProjectSchema>(
       type: String,
       required: true,
     },
+    tech_stack: {
+      type: [String],
+      required: true,
+    },
     outcome_or_metrics: {
       type: String,
       default: "",
