@@ -18,6 +18,7 @@ const developerProjectSchema = new Schema<IDeveloperProjectSchema>(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     title: {

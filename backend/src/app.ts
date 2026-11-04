@@ -10,6 +10,7 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import developerProjectRoutes from "./modules/developer-project/developer-project.routes.js";
 import skillRoutes from "./modules/skill/skill.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import workedInCompanyRoutes from "./modules/worked-in-company/worked-in-company.routes.js";
 
 // Filters
 import { allExceptionFilter } from "./filters/all-exceptions.filter.js";
@@ -51,6 +52,12 @@ const startServer = async () => {
     isAuthenticated,
     isAuthorized({ for_client: false }),
     skillRoutes,
+  );
+  app.use(
+    "/api/v1/worked-in-company",
+    isAuthenticated,
+    isAuthorized({ for_client: false }),
+    workedInCompanyRoutes,
   );
   app.use("/api/v1/user", isAuthenticated, userRoutes);
 

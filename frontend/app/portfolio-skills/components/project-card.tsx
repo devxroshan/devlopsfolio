@@ -59,6 +59,7 @@ export default function ProjectCard({
       <div className="mt-2 flex flex-wrap gap-2">
         <a
           href={live}
+          target="_blank"
           className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1 text-xs font-semibold text-black transition hover:bg-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
           <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
@@ -66,6 +67,7 @@ export default function ProjectCard({
         </a>
         <a
           href={github}
+          target="_blank"
           className="inline-flex items-center gap-1 rounded-md border border-neutral-700 px-2.5 py-1 text-xs font-semibold text-neutral-200 transition hover:border-neutral-500 hover:bg-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           GitHub repo
