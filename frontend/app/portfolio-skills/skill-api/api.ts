@@ -1,6 +1,6 @@
-import { api } from "../lib/api";
-import { APISuccess } from "../types/api-success";
-import { schemaValidator } from "../utils/schema-validator";
+import { api } from "../../lib/api";
+import { APISuccess } from "../../types/api-success";
+import { schemaValidator } from "../../utils/schema-validator";
 import { AddSkillInfo, addSkillSchema } from "./schema/add-skill.schema";
 import {
   deleteSkillSchema,

@@ -19,20 +19,29 @@ import {
   FileStack,
   Plus,
   WorkflowIcon,
+  Divide,
 } from "lucide-react";
 import { Developer, User } from "../auth/type";
 import { EAvailability } from "../auth/enums";
 import { Skill } from "./type";
 import { SkillProficiency } from "./enum";
-import { userStore } from "../stores/user-store";
+import { useUserStore } from "../stores/user-store";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { AddSkillAPI, DeleteSkillAPI, GetAllSkillAPI } from "./skill.api";
+import { AddSkillAPI, DeleteSkillAPI, GetAllSkillAPI } from "./skill-api/api";
 import { APISuccess } from "../types/api-success";
 import { LocalAppError } from "../types/local-error";
 import { APIError } from "../types/api-error";
 import { getLocalFieldErr } from "../utils/getLocalFieldErr";
-import { skillStore } from "../stores/skill-store";
-import { DeleteSkillSchema } from "./schema/delete-skill.schema";
+import { useSkillStore } from "../stores/skill-store";
+import { DeleteSkillSchema } from "./skill-api/schema/delete-skill.schema";
+import { AddProjectSchema } from "./project-api/schema/add-project.schema";
+import {
+  AddProjectAPI,
+  DeleteProjectAPI,
+  GetAllProjectAPI,
+} from "./project-api/api";
+import { useProjectStore } from "../stores/project-store";
+import { DeleteProjectSchema } from "./project-api/schema/delete-project.schema";
 
 const PortfolioAndSkills = () => {
   type DeveloperProfile = Developer & { bio: string };
@@ -40,8 +49,9 @@ const PortfolioAndSkills = () => {
 
   const queryClient = useQueryClient();
 
-  const userStre = userStore();
-  const skillStre = skillStore();
+  const userStre = useUserStore();
+  const skillStre = useSkillStore();
+  const projectStre = useProjectStore();
 
   const [userProfileInfo, setUserProfileInfo] = useState<UserProfile>(
     {} as UserProfile,
@@ -52,6 +62,9 @@ const PortfolioAndSkills = () => {
     name: "",
     experience_year: 0,
   } as Skill);
+  const [newProjectInfo, setNewProjectInfo] = useState<AddProjectSchema>(
+    {} as AddProjectSchema,
+  );
   const [isAddProject, setIsAddProject] = useState<boolean>(false);
   const [isAddRole, setIsAddRole] = useState<boolean>(false);
 
@@ -70,11 +83,8 @@ const PortfolioAndSkills = () => {
       queryClient.invalidateQueries({
         queryKey: ["all-skill"],
       });
-      console.log(data);
     },
-    onError: (err) => {
-      console.log(err);
-    },
+    onError: (err) => {},
   });
 
   const deleteSkillMutation = useMutation<
@@ -87,16 +97,53 @@ const PortfolioAndSkills = () => {
     onError: (err) => {},
   });
 
+  const addProjectMutation = useMutation<
+    APISuccess,
+    APIError | LocalAppError,
+    AddProjectSchema
+  >({
+    mutationFn: AddProjectAPI,
+    onSuccess: (data) => {
+      if (data.ok) {
+        setNewProjectInfo({} as AddProjectSchema);
+        queryClient.invalidateQueries({
+          queryKey: ["all-developer-project"],
+        });
+      }
+    },
+    onError: (err) => {},
+  });
+
+  const deleteProjectMutation = useMutation<
+    APISuccess,
+    APIError | LocalAppError,
+    DeleteProjectSchema
+  >({
+    mutationFn: DeleteProjectAPI,
+    onSuccess: (data) => {},
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const skillQuery = useQuery({
     queryFn: GetAllSkillAPI,
     queryKey: ["all-skill"],
+  });
+
+  const projectQuery = useQuery({
+    queryFn: GetAllProjectAPI,
+    queryKey: ["all-developer-project"],
   });
 
   useEffect(() => {
     if (skillQuery.data?.data) {
       skillStre.setSkill(skillQuery.data.data);
     }
-  }, [skillQuery.data]);
+    if (projectQuery.data?.data) {
+      projectStre.setProjects(projectQuery.data.data);
+    }
+  }, [skillQuery.data, projectQuery.data]);
 
   const handleAddSkill = () => {
     addSkillMutation.mutate(skillInfo);
@@ -370,13 +417,45 @@ const PortfolioAndSkills = () => {
           </div>
 
           <div className="w-full flex flex-col items-center justify-start gap-2">
-            <ProjectCard></ProjectCard>
-            <ProjectCard></ProjectCard>
-            <ProjectCard></ProjectCard>
+            {projectStre.projects.length > 0 &&
+              projectStre.projects.map((project) => (
+                <ProjectCard
+                  key={project._id}
+                  title={project.title}
+                  roles={project.role}
+                  techStack={project.tech_stack}
+                  description={project.description}
+                  outcome={project.outcome_or_metrics}
+                  live={project.live}
+                  github={project.github}
+                  onDelete={() => {
+                    projectStre.removeProject(project._id);
+                    deleteProjectMutation.mutate({ project_id: project._id });
+                  }}
+                ></ProjectCard>
+              ))}
+
+            {!projectStre.projects.length && (
+              <div className="text-sm text-text-muted py-6 flex flex-col items-center justify-center gap-2">
+                No projects yet.
+                <Button
+                  variant="primary"
+                  btnText="Add Project"
+                  size="xs"
+                  className="rounded-md"
+                  onClick={() => setIsAddProject(true)}
+                />
+              </div>
+            )}
           </div>
 
           {isAddProject && (
-            <div className="w-full bg-surface-elevated rounded-lg border border-border-subtle flex flex-col items-start justify-center gap-2 px-3 py-2">
+            <div
+              className="w-full bg-surface-elevated rounded-lg border border-border-subtle flex flex-col items-start justify-center gap-2 px-3 py-2"
+              onKeyDown={(e) => {
+                e.key == "Enter" && addProjectMutation.mutate(newProjectInfo);
+              }}
+            >
               <span className="font-semibold text-sm">New Project:</span>
 
               <div className="grid w-full grid-cols-2 items-start gap-2">
@@ -384,51 +463,128 @@ const PortfolioAndSkills = () => {
                   variant="primary"
                   label="Project Title"
                   bgColor="bg-surface-hover"
-                  value={""}
-                  onChange={() => {}}
+                  value={newProjectInfo.title}
+                  error={
+                    getLocalFieldErr(
+                      "title",
+                      addProjectMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
+                  onChange={(e) =>
+                    setNewProjectInfo({
+                      ...newProjectInfo,
+                      title: e.target.value,
+                    })
+                  }
                 />
                 <Input
                   variant="primary"
                   label="Role (Comma seprated)"
                   bgColor="bg-surface-hover"
-                  value={""}
-                  onChange={() => {}}
+                  value={newProjectInfo.role?.toString() ?? ""}
+                  error={
+                    getLocalFieldErr(
+                      "role",
+                      addProjectMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
+                  onChange={(e) =>
+                    setNewProjectInfo({
+                      ...newProjectInfo,
+                      role: e.target.value.trim().split(","),
+                    })
+                  }
                 />
                 <Input
                   variant="primary"
                   label="Tech Stack (Comma seprated)"
                   bgColor="bg-surface-hover"
-                  value={""}
-                  onChange={() => {}}
+                  value={newProjectInfo.tech_stack?.toString() ?? ""}
+                  error={
+                    getLocalFieldErr(
+                      "tech_stack",
+                      addProjectMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
+                  onChange={(e) =>
+                    setNewProjectInfo({
+                      ...newProjectInfo,
+                      tech_stack: e.target.value.trim().split(","),
+                    })
+                  }
                 />
                 <Input
                   variant="primary"
                   label="Outcome & Metrics"
                   bgColor="bg-surface-hover"
-                  value={""}
-                  onChange={() => {}}
+                  value={newProjectInfo.outcome_or_metrics}
+                  error={
+                    getLocalFieldErr(
+                      "outcome_or_metrics",
+                      addProjectMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
+                  onChange={(e) =>
+                    setNewProjectInfo({
+                      ...newProjectInfo,
+                      outcome_or_metrics: e.target.value,
+                    })
+                  }
                 />
                 <Input
                   variant="primary"
                   label="Live URL"
                   bgColor="bg-surface-hover"
-                  value={""}
-                  onChange={() => {}}
+                  value={newProjectInfo.live}
+                  error={
+                    getLocalFieldErr(
+                      "live",
+                      addProjectMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
+                  onChange={(e) =>
+                    setNewProjectInfo({
+                      ...newProjectInfo,
+                      live: e.target.value,
+                    })
+                  }
                 />
                 <Input
                   variant="primary"
                   label="Github repo"
                   bgColor="bg-surface-hover"
-                  value={""}
-                  onChange={() => {}}
+                  value={newProjectInfo.github}
+                  error={
+                    getLocalFieldErr(
+                      "github",
+                      addProjectMutation.error as LocalAppError,
+                    )?.msg ?? ""
+                  }
+                  onChange={(e) =>
+                    setNewProjectInfo({
+                      ...newProjectInfo,
+                      github: e.target.value,
+                    })
+                  }
                 />
               </div>
               <Input
                 variant="textarea"
                 label="Description"
                 bgColor="bg-surface-hover"
-                value={""}
-                onChange={() => {}}
+                value={newProjectInfo.description}
+                error={
+                  getLocalFieldErr(
+                    "description",
+                    addProjectMutation.error as LocalAppError,
+                  )?.msg ?? ""
+                }
+                onChange={(e) =>
+                  setNewProjectInfo({
+                    ...newProjectInfo,
+                    description: e.target.value,
+                  })
+                }
               />
 
               <div className="w-xs flex items-center justify-center ml-auto gap-2">
@@ -438,7 +594,14 @@ const PortfolioAndSkills = () => {
                   size="sm"
                   onClick={() => setIsAddProject(false)}
                 />
-                <Button variant="primary" btnText="Save Project" size="sm" />
+                <Button
+                  variant="primary"
+                  btnText="Add Project"
+                  size="sm"
+                  onClick={() => {
+                    addProjectMutation.mutate(newProjectInfo);
+                  }}
+                />
               </div>
             </div>
           )}

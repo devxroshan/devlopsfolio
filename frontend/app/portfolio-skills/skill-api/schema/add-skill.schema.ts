@@ -1,5 +1,5 @@
 import z from "zod";
-import { SkillProficiency } from "../enum";
+import { SkillProficiency } from "../../enum";
 
 const EProficiency = z.enum(SkillProficiency, {
   error: "Select a valid proficiency.",

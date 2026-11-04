@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { userStore } from "../stores/user-store";
+import { useUserStore } from "../stores/user-store";
 import { User } from "lucide-react";
 
 const routes = [
@@ -15,7 +15,7 @@ const routes = [
 const Navbar = () => {
   const pathname = usePathname();
 
-  const user = userStore();
+  const user = useUserStore();
 
   return (
     <nav className="w-full h-14 px-6 py-1 flex items-center justify-between gap-2 select-none border-b border-border-subtle">

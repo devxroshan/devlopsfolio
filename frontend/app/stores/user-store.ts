@@ -12,7 +12,7 @@ type Action = {
   setUser: (user: Partial<State>) => void;
 };
 
-export const userStore = create<State & Action>((set) => ({
+export const useUserStore = create<State & Action>((set) => ({
   _id: "",
   name: "",
   email: "",

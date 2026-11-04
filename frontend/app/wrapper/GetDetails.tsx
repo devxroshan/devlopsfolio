@@ -7,7 +7,7 @@ import { GetMeAPI } from "../api/user.api";
 import { APISuccess } from "../types/api-success";
 import { LocalAppError } from "../types/local-error";
 import { APIError } from "../types/api-error";
-import { userStore } from "../stores/user-store";
+import { useUserStore } from "../stores/user-store";
 
 const omittedUserFetch = ["auth", "/"];
 
@@ -15,7 +15,7 @@ const GetDetails = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   //   Stores
-  const user = userStore();
+  const user = useUserStore();
 
   const [fetchUserDetails, setFetchUserDetails] = useState<boolean>(
     !omittedUserFetch.includes(pathname),

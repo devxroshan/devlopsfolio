@@ -18,7 +18,7 @@ interface Action {
   removeSkill: (id: string) => void;
 }
 
-export const skillStore = create<State & Action>((set) => ({
+export const useSkillStore = create<State & Action>((set) => ({
   skills: [],
   setSkill: (skills) => set((state) => ({ ...state, skills })),
   removeSkill: (id) =>
