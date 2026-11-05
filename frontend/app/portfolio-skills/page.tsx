@@ -142,7 +142,7 @@ const PortfolioAndSkills = () => {
     onSuccess: (data) => {
       setNewRoleInfo({} as CreateRoleSchema);
       queryClient.invalidateQueries({
-        queryKey: ["all-developer-roles"],
+        queryKey: ["all-developer-role"],
       });
     },
     onError: (err) => {
@@ -159,7 +159,7 @@ const PortfolioAndSkills = () => {
     onSuccess: (data) => {
       if (data.ok) {
         queryClient.invalidateQueries({
-          queryKey: ["all-developer-roles"],
+          queryKey: ["all-developer-role"],
         });
       }
     },
@@ -180,7 +180,7 @@ const PortfolioAndSkills = () => {
 
   const roleQuery = useQuery({
     queryFn: GetAllRolesAPI,
-    queryKey: ["all-developer-roles"],
+    queryKey: ["all-developer-role"],
   });
 
   useEffect(() => {
