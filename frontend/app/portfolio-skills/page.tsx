@@ -10,7 +10,7 @@ import SkillCard from "./components/skill-card";
 import ProjectCard from "./components/project-card";
 import RoleCard from "./components/role-card";
 
-import { disciplineOptions } from "../auth/page";
+import { availabilityOptions, disciplineOptions } from "../auth/page";
 
 import {
   EyeIcon,
@@ -47,8 +47,9 @@ import { DeleteProjectSchema } from "./project-api/schema/delete-project.schema"
 import { DeleteRoleSchema } from "./role-api/schema/delete-role.schema";
 
 const PortfolioAndSkills = () => {
-  type DeveloperProfile = Developer & { bio: string };
-  type UserProfile = Omit<User, "password">;
+  type UserProfile = Omit<User, "password"> & {
+    developer_profile: Developer & { user_id: string; _id: string };
+  };
 
   const queryClient = useQueryClient();
 
@@ -60,8 +61,6 @@ const PortfolioAndSkills = () => {
   const [userProfileInfo, setUserProfileInfo] = useState<UserProfile>(
     {} as UserProfile,
   );
-  const [developerProfileInfo, setDeveloperProfileInfo] =
-    useState<DeveloperProfile>({} as DeveloperProfile);
   const [skillInfo, setSkillInfo] = useState<Skill>({
     name: "",
     experience_year: 0,
@@ -193,7 +192,12 @@ const PortfolioAndSkills = () => {
     if (roleQuery.data?.data) {
       roleStre.setRoles(roleQuery.data.data);
     }
+    if (userStre) {
+      setUserProfileInfo(userStre);
+    }
   }, [skillQuery.data, projectQuery.data, roleQuery.data]);
+
+  console.log(userProfileInfo);
 
   return (
     <>
@@ -243,48 +247,60 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="primary"
                 label="Full Name"
-                value={userProfileInfo.name}
+                value={userProfileInfo.name ?? ""}
                 onChange={(e) =>
-                  setUserProfileInfo({
-                    ...userProfileInfo,
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
                     name: e.target.value,
-                  })
+                  }))
                 }
               />
               <Input
                 variant="primary"
                 label="Title"
-                value={developerProfileInfo.title}
+                value={userProfileInfo.developer_profile?.title ?? ""}
                 onChange={(e) =>
-                  setDeveloperProfileInfo({
-                    ...developerProfileInfo,
-                    title: e.target.value,
-                  })
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
+                    developer_profile: {
+                      ...prev.developer_profile,
+                      title: e.target.value,
+                    },
+                  }))
                 }
               />
             </div>
             <div className="w-full flex items-center justify-center gap-2">
               <Input
-                variant="primary"
+                variant="select"
                 label="Discipline"
-                value={developerProfileInfo.discipline}
+                value={userProfileInfo.developer_profile?.discipline ?? ""}
+                options={disciplineOptions}
                 onChange={(e) =>
-                  setDeveloperProfileInfo({
-                    ...developerProfileInfo,
-                    discipline: e.target.value,
-                  })
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
+                    developer_profile: {
+                      ...prev.developer_profile,
+                      discipline: e.target.value,
+                    },
+                  }))
                 }
               />
               <Input
                 variant="number"
                 label="Hourly Rate (₹/hr)"
-                value={developerProfileInfo.hourly_rate_rupees}
+                value={
+                  userProfileInfo.developer_profile?.hourly_rate_rupees ?? 0
+                }
                 min={1}
                 onChange={(e) =>
-                  setDeveloperProfileInfo({
-                    ...developerProfileInfo,
-                    hourly_rate_rupees: Number(e.target.value),
-                  })
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
+                    developer_profile: {
+                      ...prev.developer_profile,
+                      hourly_rate_rupees: Number(e.target.value),
+                    },
+                  }))
                 }
               />
             </div>
@@ -292,25 +308,31 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="select"
                 label="Availability"
-                value={developerProfileInfo.availability}
-                options={disciplineOptions}
+                value={userProfileInfo.developer_profile?.availability ?? ""}
+                options={availabilityOptions}
                 onChange={(e) =>
-                  setDeveloperProfileInfo({
-                    ...developerProfileInfo,
-                    availability: e.target.value as EAvailability,
-                  })
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
+                    developer_profile: {
+                      ...prev.developer_profile,
+                      availability: e.target.value as EAvailability,
+                    },
+                  }))
                 }
               />
               <Input
                 variant="number"
                 label="Years of Experience"
-                value={developerProfileInfo.experience_years}
+                value={userProfileInfo.developer_profile?.experience_years ?? 0}
                 min={1}
                 onChange={(e) =>
-                  setDeveloperProfileInfo({
-                    ...developerProfileInfo,
-                    experience_years: Number(e.target.value),
-                  })
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
+                    developer_profile: {
+                      ...prev.developer_profile,
+                      experience_years: Number(e.target.value),
+                    },
+                  }))
                 }
               />
             </div>
@@ -318,23 +340,26 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="primary"
                 label="Location"
-                value={developerProfileInfo.location}
+                value={userProfileInfo.developer_profile?.location ?? ""}
                 onChange={(e) =>
-                  setDeveloperProfileInfo({
-                    ...developerProfileInfo,
-                    location: e.target.value,
-                  })
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
+                    developer_profile: {
+                      ...prev.developer_profile,
+                      location: e.target.value,
+                    },
+                  }))
                 }
               />
               <Input
                 variant="primary"
                 label="Company"
-                value={userProfileInfo.company}
+                value={userProfileInfo.company ?? ""}
                 onChange={(e) =>
-                  setUserProfileInfo({
-                    ...userProfileInfo,
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
                     company: e.target.value,
-                  })
+                  }))
                 }
               />
             </div>
@@ -342,12 +367,15 @@ const PortfolioAndSkills = () => {
               <Input
                 variant="textarea"
                 label="Bio & Summary"
-                value={developerProfileInfo.bio}
+                value={userProfileInfo.developer_profile?.bio ?? ""}
                 onChange={(e) =>
-                  setDeveloperProfileInfo({
-                    ...developerProfileInfo,
-                    bio: e.target.value,
-                  })
+                  setUserProfileInfo((prev) => ({
+                    ...prev,
+                    developer_profile: {
+                      ...prev.developer_profile,
+                      bio: e.target.value,
+                    },
+                  }))
                 }
               />
             </div>

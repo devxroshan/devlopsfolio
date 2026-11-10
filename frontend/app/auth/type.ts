@@ -16,5 +16,6 @@ export type Developer = {
   location: string;
   experience_years: number;
   availability: EAvailability;
+  bio: string;
   hourly_rate_rupees: number;
 };

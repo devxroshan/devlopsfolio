@@ -153,6 +153,12 @@ const developerDefaults = {
   hourly_rate_rupees: 0,
 };
 
+export const availabilityOptions = [
+  { label: "Full Time", value: "full time" },
+  { label: "Part Time", value: "part time" },
+  { label: "Not Available", value: "not available" },
+];
+
 const SignUp = ({
   setCurrentTab,
   userInfo,
@@ -314,7 +320,7 @@ const SignUp = ({
             <div className="w-full h-fit flex flex-col items-center justify-start gap-2">
               {!userInfo.is_client && (
                 <>
-                  <div className="w-full h-fit flex gap-1 items-center justify-between">
+                  <div className="w-full h-fit flex flex-col gap-1 items-center justify-between">
                     <Input
                       variant="select"
                       label="Discipline"
@@ -423,11 +429,7 @@ const SignUp = ({
                         signUpMutation.error as LocalAppError,
                       )?.msg ?? ""
                     }
-                    options={[
-                      { label: "Full Time", value: "full time" },
-                      { label: "Part Time", value: "part time" },
-                      { label: "Not Available", value: "not available" },
-                    ]}
+                    options={availabilityOptions}
                     onChange={(e) => {
                       setUserInfo({
                         ...userInfo,
