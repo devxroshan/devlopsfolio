@@ -17,7 +17,7 @@ export const isAuthenticated = async (
   next: express.NextFunction,
 ) => {
   try {
-    const accessToken = req.cookies[APP_CONSTANTS.AUTH_COOKIE_NAME];
+    const accessToken = req.cookies[APP_CONSTANTS.SIGN_IN_COOKIE_NAME];
 
     if (!accessToken) {
       throw new BadRequestException("Access token required.");
