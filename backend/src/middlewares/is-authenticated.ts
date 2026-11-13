@@ -8,7 +8,7 @@ import {
   NotFoundException,
 } from "../config/http-exceptions.js";
 import { env } from "../config/env.js";
-import { User } from "../models/user.model.js";
+import { User } from "../modules/user/model/user.model.js";
 import type { IAuthenticatedUser } from "../interfaces/authenticated.js";
 
 export const isAuthenticated = async (

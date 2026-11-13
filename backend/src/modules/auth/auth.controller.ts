@@ -10,7 +10,7 @@ import type { RequestHandlerParams } from "../../utils/asyncRequestHandler.js";
 import type { IDeveloperProfile } from "../../models/developer-profile.model.js";
 
 // Models
-import { User, type IUser } from "../../models/user.model.js";
+import { User, type IUser } from "../user/model/user.model.js";
 import { VerificationSession } from "../../models/verification-session.model.js";
 import { DeveloperProfile } from "../../models/developer-profile.model.js";
 

@@ -5,7 +5,7 @@ import {
   asyncRequestHandler,
   type RequestHandlerParams,
 } from "../../utils/asyncRequestHandler.js";
-import { Skill, type ISkill } from "../../models/skill.model.js";
+import { Skill, type ISkill } from "./model/skill.model.js";
 import { NotFoundException } from "../../config/http-exceptions.js";
 
 const addSkill = async (handler: RequestHandlerParams) => {

@@ -3,7 +3,7 @@ import {
   type RequestHandlerParams,
 } from "../../utils/asyncRequestHandler.js";
 
-import { WorkedInCompany } from "../../models/worked-in-company.model.js";
+import { WorkedInCompany } from "./model/worked-in-company.model.js";
 import { NotFoundException } from "../../config/http-exceptions.js";
 
 const createWorkedInCompany = async (handler: RequestHandlerParams) => {

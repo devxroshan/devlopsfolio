@@ -9,7 +9,7 @@ import {
   DeveloperProject,
   type IDeveloperProject,
   type IDeveloperProjectSchema,
-} from "../../models/developer-project.model.js";
+} from "./model/developer-project.model.js";
 
 // exceptions
 import { NotFoundException } from "../../config/http-exceptions.js";
