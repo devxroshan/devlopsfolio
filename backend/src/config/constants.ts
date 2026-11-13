@@ -1,3 +1,3 @@
 export const APP_CONSTANTS = {
-    AUTH_COOKIE_NAME: "accessToken"
+  SIGN_IN_COOKIE_NAME: "accessToken",
 } as const;

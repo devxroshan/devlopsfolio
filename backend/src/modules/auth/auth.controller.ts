@@ -241,7 +241,7 @@ const signIn = async (handler: RequestHandlerParams) => {
 
   handler.res
     .status(200)
-    .cookie(APP_CONSTANTS.AUTH_COOKIE_NAME, accessToken, {
+    .cookie(APP_CONSTANTS.SIGN_IN_COOKIE_NAME, accessToken, {
       httpOnly: true,
       secure: !env.isDevelopment,
       maxAge: ACESS_TOKEN_EXPIRY_DAY * 24 * 60 * 60 * 1000,
@@ -349,7 +349,7 @@ const resetPassword = async (handler: RequestHandlerParams) => {
 };
 
 const isSignedIn = async (handler: RequestHandlerParams) => {
-  const accessToken = handler.req.cookies[APP_CONSTANTS.AUTH_COOKIE_NAME];
+  const accessToken = handler.req.cookies[APP_CONSTANTS.SIGN_IN_COOKIE_NAME];
 
   if (!accessToken) {
     return {
