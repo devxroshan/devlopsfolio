@@ -15,3 +15,11 @@ export interface Project {
   live: string;
   github: string;
 }
+
+export interface Job {
+  company_name: string;
+  role: string;
+  start_year: number;
+  end_year: number;
+  description?: string;
+}

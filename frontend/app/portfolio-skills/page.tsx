@@ -49,6 +49,8 @@ import {
   useDeleteRoleMutation,
 } from "./mutations/role.mutation";
 
+import ProfilePreview from "./popups/profile-preview";
+
 const PortfolioAndSkills = () => {
   type UserProfile = Omit<User, "password"> & {
     developer_profile: Developer & { user_id: string; _id: string };
@@ -77,6 +79,7 @@ const PortfolioAndSkills = () => {
   const [isAddProject, setIsAddProject] = useState<boolean>(false);
   const [isAddRole, setIsAddRole] = useState<boolean>(false);
   const [isSaveable, setIsSaveable] = useState<boolean>(false);
+  const [isPreview, setIsPreview] = useState<boolean>(false);
 
   // Project Mutations
   const addProject = useAddProjectMutation((data) => {
@@ -176,6 +179,7 @@ const PortfolioAndSkills = () => {
               leadingIcon={EyeIcon}
               size="sm"
               fullWidth={false}
+              onClick={() => setIsPreview(true)}
             />
             <Button
               variant="primary"
@@ -801,6 +805,25 @@ const PortfolioAndSkills = () => {
             </div>
           )}
         </section>
+
+        {isPreview && (
+          <ProfilePreview
+            user={
+              {
+                ...userProfileInfo,
+                ...userProfileInfo.developer_profile,
+              } as Parameters<typeof ProfilePreview>[0]["user"]
+            }
+            projects={projectStre.projects}
+            skills={skillStre.skills.map((skill) => ({
+              ...skill,
+              proficiency_level:
+                skill.proficiency_level ?? ("beginner" as SkillProficiency),
+            }))}
+            jobs={roleStre.roles}
+            setIsPreview={setIsPreview}
+          />
+        )}
       </AuthRequired>
     </>
   );
