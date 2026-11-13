@@ -25,27 +25,29 @@ import { EAvailability } from "../auth/enums";
 import { Skill } from "./type";
 import { SkillProficiency } from "./enum";
 import { useUserStore } from "../stores/user-store";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { AddSkillAPI, DeleteSkillAPI, GetAllSkillAPI } from "./skill-api/api";
-import { AddRoleAPI, GetAllRolesAPI, DeleteRoleAPI } from "./role-api/api";
-import { APISuccess } from "../types/api-success";
+import { useQuery } from "@tanstack/react-query";
+import { GetAllSkillAPI } from "./skill-api/api";
+import { GetAllRolesAPI } from "./role-api/api";
 import { LocalAppError } from "../types/local-error";
-import { APIError } from "../types/api-error";
 import { getLocalFieldErr } from "../utils/getLocalFieldErr";
 import { useSkillStore } from "../stores/skill-store";
-import { DeleteSkillSchema } from "./skill-api/schema/delete-skill.schema";
 import { AddProjectSchema } from "./project-api/schema/add-project.schema";
 import { CreateRoleSchema } from "./role-api/schema/create-role.schema";
-import {
-  AddProjectAPI,
-  DeleteProjectAPI,
-  GetAllProjectAPI,
-} from "./project-api/api";
+import { GetAllProjectAPI } from "./project-api/api";
 import { useProjectStore } from "../stores/project-store";
 import { useRoleStore } from "../stores/role-store";
-import { DeleteProjectSchema } from "./project-api/schema/delete-project.schema";
-import { DeleteRoleSchema } from "./role-api/schema/delete-role.schema";
-import ProfilePreview from "./popups/profile-preview";
+import {
+  useAddProjectMutation,
+  useDeleteProjectMutation,
+} from "./mutations/project.mutation";
+import {
+  useAddSkillMutation,
+  useDeleteSkillMutation,
+} from "./mutations/skill.mutation";
+import {
+  useAddRoleMutation,
+  useDeleteRoleMutation,
+} from "./mutations/role.mutation";
 
 const PortfolioAndSkills = () => {
   type UserProfile = Omit<User, "password"> & {
@@ -60,7 +62,7 @@ const PortfolioAndSkills = () => {
   const roleStre = useRoleStore();
 
   const [userProfileInfo, setUserProfileInfo] = useState<UserProfile>(
-    {} as UserProfile,
+    userStre as UserProfile,
   );
   const [skillInfo, setSkillInfo] = useState<Skill>({
     name: "",
@@ -76,99 +78,41 @@ const PortfolioAndSkills = () => {
   const [isAddRole, setIsAddRole] = useState<boolean>(false);
   const [isSaveable, setIsSaveable] = useState<boolean>(false);
 
-  useEffect(() => {
-    setUserProfileInfo(userStre);
-  }, [userStre]);
-
-  const addSkillMutation = useMutation<
-    APISuccess,
-    LocalAppError | APIError,
-    Skill
-  >({
-    mutationFn: AddSkillAPI,
-    onSuccess: (data) => {
-      setSkillInfo({} as Skill);
+  // Project Mutations
+  const addProject = useAddProjectMutation((data) => {
+    if (data.ok) {
+      setNewProjectInfo({} as AddProjectSchema);
+      setIsAddProject(false);
       queryClient.invalidateQueries({
-        queryKey: ["all-skill"],
+        queryKey: ["all-developer-project"],
       });
-    },
-    onError: (err) => {},
+    }
   });
+  const deleteProject = useDeleteProjectMutation();
 
-  const deleteSkillMutation = useMutation<
-    APISuccess,
-    APIError | LocalAppError,
-    DeleteSkillSchema
-  >({
-    mutationFn: DeleteSkillAPI,
-    onSuccess: (data) => {},
-    onError: (err) => {},
+  // Skill Mutations
+  const addSkill = useAddSkillMutation((data) => {
+    setSkillInfo({} as Skill);
+    queryClient.invalidateQueries({
+      queryKey: ["all-skill"],
+    });
   });
+  const deleteSkill = useDeleteSkillMutation();
 
-  const addProjectMutation = useMutation<
-    APISuccess,
-    APIError | LocalAppError,
-    AddProjectSchema
-  >({
-    mutationFn: AddProjectAPI,
-    onSuccess: (data) => {
-      if (data.ok) {
-        setNewProjectInfo({} as AddProjectSchema);
-        setIsAddProject(false);
-        queryClient.invalidateQueries({
-          queryKey: ["all-developer-project"],
-        });
-      }
-    },
-    onError: (err) => {},
+  // Role Mutations
+  const addRole = useAddRoleMutation((data) => {
+    setNewRoleInfo({} as CreateRoleSchema);
+    setIsAddRole(false);
+    queryClient.invalidateQueries({
+      queryKey: ["all-developer-role"],
+    });
   });
-
-  const deleteProjectMutation = useMutation<
-    APISuccess,
-    APIError | LocalAppError,
-    DeleteProjectSchema
-  >({
-    mutationFn: DeleteProjectAPI,
-    onSuccess: (data) => {},
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-
-  const addRoleMutation = useMutation<
-    APISuccess,
-    APIError | LocalAppError,
-    CreateRoleSchema
-  >({
-    mutationFn: AddRoleAPI,
-    onSuccess: (data) => {
-      setNewRoleInfo({} as CreateRoleSchema);
-      setIsAddRole(false);
+  const deleteRole = useDeleteRoleMutation((data) => {
+    if (data.ok) {
       queryClient.invalidateQueries({
         queryKey: ["all-developer-role"],
       });
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-
-  const deleteRoleMutation = useMutation<
-    APISuccess,
-    APIError | LocalAppError,
-    DeleteRoleSchema
-  >({
-    mutationFn: DeleteRoleAPI,
-    onSuccess: (data) => {
-      if (data.ok) {
-        queryClient.invalidateQueries({
-          queryKey: ["all-developer-role"],
-        });
-      }
-    },
-    onError: (err) => {
-      console.log(err);
-    },
+    }
   });
 
   const skillQuery = useQuery({
@@ -412,7 +356,7 @@ const PortfolioAndSkills = () => {
                   proficiency={skill.proficiency_level!}
                   onDelete={() => {
                     skillStre.removeSkill(skill._id);
-                    deleteSkillMutation.mutate({ skill_id: skill._id });
+                    deleteSkill.mutate({ skill_id: skill._id });
                   }}
                 ></SkillCard>
               ))}
@@ -431,9 +375,8 @@ const PortfolioAndSkills = () => {
               </span>
 
               <span className="text-red-700 text-xs font-medium select-none">
-                {(addSkillMutation.error as LocalAppError) &&
-                  (addSkillMutation.error as LocalAppError).fieldErrors![0]
-                    ?.msg}
+                {(addSkill.error as LocalAppError) &&
+                  (addSkill.error as LocalAppError).fieldErrors![0]?.msg}
               </span>
             </div>
 
@@ -486,7 +429,7 @@ const PortfolioAndSkills = () => {
                 btnText="Add Skill"
                 size="xs"
                 leadingIcon={Plus}
-                onClick={() => addSkillMutation.mutate(skillInfo)}
+                onClick={() => addSkill.mutate(skillInfo)}
               />
             </div>
           </div>
@@ -521,7 +464,7 @@ const PortfolioAndSkills = () => {
                   github={project.github}
                   onDelete={() => {
                     projectStre.removeProject(project._id);
-                    deleteProjectMutation.mutate({ project_id: project._id });
+                    deleteProject.mutate({ project_id: project._id });
                   }}
                 ></ProjectCard>
               ))}
@@ -544,7 +487,7 @@ const PortfolioAndSkills = () => {
             <div
               className="w-full bg-surface-elevated rounded-lg border border-border-subtle flex flex-col items-start justify-center gap-2 px-3 py-2"
               onKeyDown={(e) => {
-                e.key == "Enter" && addProjectMutation.mutate(newProjectInfo);
+                e.key == "Enter" && addProject.mutate(newProjectInfo);
               }}
             >
               <span className="font-semibold text-sm">New Project:</span>
@@ -556,10 +499,8 @@ const PortfolioAndSkills = () => {
                   bgColor="bg-surface-hover"
                   value={newProjectInfo.title}
                   error={
-                    getLocalFieldErr(
-                      "title",
-                      addProjectMutation.error as LocalAppError,
-                    )?.msg ?? ""
+                    getLocalFieldErr("title", addProject.error as LocalAppError)
+                      ?.msg ?? ""
                   }
                   onChange={(e) =>
                     setNewProjectInfo({
@@ -574,10 +515,8 @@ const PortfolioAndSkills = () => {
                   bgColor="bg-surface-hover"
                   value={newProjectInfo.role?.toString() ?? ""}
                   error={
-                    getLocalFieldErr(
-                      "role",
-                      addProjectMutation.error as LocalAppError,
-                    )?.msg ?? ""
+                    getLocalFieldErr("role", addProject.error as LocalAppError)
+                      ?.msg ?? ""
                   }
                   onChange={(e) =>
                     setNewProjectInfo({
@@ -594,7 +533,7 @@ const PortfolioAndSkills = () => {
                   error={
                     getLocalFieldErr(
                       "tech_stack",
-                      addProjectMutation.error as LocalAppError,
+                      addProject.error as LocalAppError,
                     )?.msg ?? ""
                   }
                   onChange={(e) =>
@@ -612,7 +551,7 @@ const PortfolioAndSkills = () => {
                   error={
                     getLocalFieldErr(
                       "outcome_or_metrics",
-                      addProjectMutation.error as LocalAppError,
+                      addProject.error as LocalAppError,
                     )?.msg ?? ""
                   }
                   onChange={(e) =>
@@ -628,10 +567,8 @@ const PortfolioAndSkills = () => {
                   bgColor="bg-surface-hover"
                   value={newProjectInfo.live}
                   error={
-                    getLocalFieldErr(
-                      "live",
-                      addProjectMutation.error as LocalAppError,
-                    )?.msg ?? ""
+                    getLocalFieldErr("live", addProject.error as LocalAppError)
+                      ?.msg ?? ""
                   }
                   onChange={(e) =>
                     setNewProjectInfo({
@@ -648,7 +585,7 @@ const PortfolioAndSkills = () => {
                   error={
                     getLocalFieldErr(
                       "github",
-                      addProjectMutation.error as LocalAppError,
+                      addProject.error as LocalAppError,
                     )?.msg ?? ""
                   }
                   onChange={(e) =>
@@ -667,7 +604,7 @@ const PortfolioAndSkills = () => {
                 error={
                   getLocalFieldErr(
                     "description",
-                    addProjectMutation.error as LocalAppError,
+                    addProject.error as LocalAppError,
                   )?.msg ?? ""
                 }
                 onChange={(e) =>
@@ -690,7 +627,7 @@ const PortfolioAndSkills = () => {
                   btnText="Add Project"
                   size="sm"
                   onClick={() => {
-                    addProjectMutation.mutate(newProjectInfo);
+                    addProject.mutate(newProjectInfo);
                   }}
                 />
               </div>
@@ -729,7 +666,7 @@ const PortfolioAndSkills = () => {
                   description={role.description}
                   onDelete={() => {
                     roleStre.removeRole(role._id);
-                    deleteRoleMutation.mutate({
+                    deleteRole.mutate({
                       worked_in_company_id: role._id,
                     });
                   }}
@@ -754,7 +691,7 @@ const PortfolioAndSkills = () => {
             <div
               className="w-full bg-surface-elevated px-3 py-3 rounded-2xl border border-border-subtle flex flex-col items-center justify-start gap-2"
               onKeyDown={(e) => {
-                e.key == "Enter" && addRoleMutation.mutate(newRoleInfo);
+                e.key == "Enter" && addRole.mutate(newRoleInfo);
               }}
             >
               <div className="grid grid-cols-2 gap-2 items-start w-full">
@@ -765,7 +702,7 @@ const PortfolioAndSkills = () => {
                   error={
                     getLocalFieldErr(
                       "company_name",
-                      addRoleMutation.error as LocalAppError,
+                      addRole.error as LocalAppError,
                     )?.msg ?? ""
                   }
                   bgColor="bg-surface-hover"
@@ -781,10 +718,8 @@ const PortfolioAndSkills = () => {
                   label="Role"
                   value={newRoleInfo.role}
                   error={
-                    getLocalFieldErr(
-                      "role",
-                      addRoleMutation.error as LocalAppError,
-                    )?.msg ?? ""
+                    getLocalFieldErr("role", addRole.error as LocalAppError)
+                      ?.msg ?? ""
                   }
                   bgColor="bg-surface-hover"
                   onChange={(e) =>
@@ -801,7 +736,7 @@ const PortfolioAndSkills = () => {
                   error={
                     getLocalFieldErr(
                       "start_year",
-                      addRoleMutation.error as LocalAppError,
+                      addRole.error as LocalAppError,
                     )?.msg ?? ""
                   }
                   bgColor="bg-surface-hover"
@@ -818,10 +753,8 @@ const PortfolioAndSkills = () => {
                   label="To"
                   value={newRoleInfo.end_year?.toString() ?? 0}
                   error={
-                    getLocalFieldErr(
-                      "end_year",
-                      addRoleMutation.error as LocalAppError,
-                    )?.msg ?? ""
+                    getLocalFieldErr("end_year", addRole.error as LocalAppError)
+                      ?.msg ?? ""
                   }
                   bgColor="bg-surface-hover"
                   min={1900}
@@ -840,7 +773,7 @@ const PortfolioAndSkills = () => {
                 error={
                   getLocalFieldErr(
                     "description",
-                    addRoleMutation.error as LocalAppError,
+                    addRole.error as LocalAppError,
                   )?.msg ?? ""
                 }
                 bgColor="bg-surface-hover"
@@ -862,7 +795,7 @@ const PortfolioAndSkills = () => {
                   variant="primary"
                   btnText="Save Role"
                   size="sm"
-                  onClick={() => addRoleMutation.mutate(newRoleInfo)}
+                  onClick={() => addRole.mutate(newRoleInfo)}
                 />
               </div>
             </div>

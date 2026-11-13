@@ -13,4 +13,4 @@ export const addSkillSchema = z.object({
   proficiency_level: EProficiency,
 });
 
-export type AddSkillInfo = z.infer<typeof addSkillSchema>;
+export type AddSkillSchema = z.infer<typeof addSkillSchema>;
