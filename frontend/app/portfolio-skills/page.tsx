@@ -45,6 +45,7 @@ import { useProjectStore } from "../stores/project-store";
 import { useRoleStore } from "../stores/role-store";
 import { DeleteProjectSchema } from "./project-api/schema/delete-project.schema";
 import { DeleteRoleSchema } from "./role-api/schema/delete-role.schema";
+import ProfilePreview from "./popups/profile-preview";
 
 const PortfolioAndSkills = () => {
   type UserProfile = Omit<User, "password"> & {
@@ -73,6 +74,7 @@ const PortfolioAndSkills = () => {
   } as CreateRoleSchema);
   const [isAddProject, setIsAddProject] = useState<boolean>(false);
   const [isAddRole, setIsAddRole] = useState<boolean>(false);
+  const [isSaveable, setIsSaveable] = useState<boolean>(false);
 
   useEffect(() => {
     setUserProfileInfo(userStre);
@@ -112,6 +114,7 @@ const PortfolioAndSkills = () => {
     onSuccess: (data) => {
       if (data.ok) {
         setNewProjectInfo({} as AddProjectSchema);
+        setIsAddProject(false);
         queryClient.invalidateQueries({
           queryKey: ["all-developer-project"],
         });
@@ -140,6 +143,7 @@ const PortfolioAndSkills = () => {
     mutationFn: AddRoleAPI,
     onSuccess: (data) => {
       setNewRoleInfo({} as CreateRoleSchema);
+      setIsAddRole(false);
       queryClient.invalidateQueries({
         queryKey: ["all-developer-role"],
       });
@@ -197,7 +201,13 @@ const PortfolioAndSkills = () => {
     }
   }, [skillQuery.data, projectQuery.data, roleQuery.data]);
 
-  console.log(userProfileInfo);
+  useEffect(() => {
+    const hasProfileChanges =
+      JSON.stringify(userProfileInfo) !==
+      JSON.stringify(userStre as UserProfile);
+
+    setIsSaveable(hasProfileChanges);
+  }, [userProfileInfo, userStre]);
 
   return (
     <>
@@ -229,6 +239,7 @@ const PortfolioAndSkills = () => {
               leadingIcon={Save}
               size="sm"
               fullWidth={false}
+              isDisabled={!isSaveable}
             />
           </div>
         </div>

@@ -41,6 +41,10 @@ api.interceptors.response.use(
       rawError: err,
     };
 
+    if (process.env.NODE_ENV === "development") {
+      console.error("API Error:", apiError);
+    }
+
     return Promise.reject(apiError);
   },
 );
