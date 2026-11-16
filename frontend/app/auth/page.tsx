@@ -151,6 +151,8 @@ const developerDefaults = {
   experience_years: 0,
   availability: undefined,
   hourly_rate_rupees: 0,
+  bio: "",
+  core_competencies: [],
 };
 
 export const availabilityOptions = [
@@ -434,6 +436,43 @@ const SignUp = ({
                       setUserInfo({
                         ...userInfo,
                         availability: e.target.value as EAvailability,
+                      });
+                    }}
+                  />
+                  <Input
+                    variant="primary"
+                    label="Core Competencies (Comma Seprated)"
+                    value={userInfo.core_competencies?.toString() ?? ""}
+                    hint="e.g Animated UI Development"
+                    error={
+                      getLocalFieldErr(
+                        "core_competencies",
+                        signUpMutation.error as LocalAppError,
+                      )?.msg ?? ""
+                    }
+                    onChange={(e) => {
+                      setUserInfo({
+                        ...userInfo,
+                        core_competencies: e.target.value.toString().split(","),
+                      });
+                    }}
+                  />
+                  <Input
+                    variant="textarea"
+                    label={`Bio`}
+                    value={userInfo.bio}
+                    hint="Write about yourself..."
+                    maxLength={700}
+                    error={
+                      getLocalFieldErr(
+                        "bio",
+                        signUpMutation.error as LocalAppError,
+                      )?.msg ?? ""
+                    }
+                    onChange={(e) => {
+                      setUserInfo({
+                        ...userInfo,
+                        bio: e.target.value,
                       });
                     }}
                   />

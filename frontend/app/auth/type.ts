@@ -18,4 +18,5 @@ export type Developer = {
   availability: EAvailability;
   bio: string;
   hourly_rate_rupees: number;
+  core_competencies: string[];
 };

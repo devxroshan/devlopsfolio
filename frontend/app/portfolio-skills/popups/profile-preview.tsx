@@ -41,6 +41,12 @@ const ProfilePreviw = ({
 }: ProfilePreviewProps) => {
   const [activeTab, setActiveTab] = useState<Tab>(tabs[0]);
 
+  const getJobHighlights = (description: string | undefined) =>
+    (description || "")
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/60 p-4 backdrop-blur-sm sm:p-6">
@@ -175,109 +181,145 @@ const ProfilePreviw = ({
                         <h3 className="font-semibold">Technical stack</h3>
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2">
-                        {skills.map((skill) => (
-                          <article
-                            key={skill._id}
-                            className="rounded-lg border border-border-subtle bg-surface-elevated p-3"
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="text-sm font-medium">
-                                {skill.name}
-                              </h4>
-                              <span className="rounded-full bg-surface-hover px-2 py-1 text-xs text-text-muted">
-                                {skill.proficiency_level}
-                              </span>
-                            </div>
-                            <p className="mt-2 text-xs text-text-muted">
-                              {skill.experience_year} years experience
+                        {skills.length > 0 ? (
+                          skills.map((skill) => (
+                            <article
+                              key={skill._id}
+                              className="rounded-lg border border-border-subtle bg-surface-elevated p-3"
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <h4 className="text-sm font-medium">
+                                  {skill.name}
+                                </h4>
+                                <span className="rounded-full bg-surface-hover px-2 py-1 text-xs text-text-muted">
+                                  {skill.proficiency_level}
+                                </span>
+                              </div>
+                              <p className="mt-2 text-xs text-text-muted">
+                                {skill.experience_year} years experience
+                              </p>
+                            </article>
+                          ))
+                        ) : (
+                          <div className="rounded-xl border border-dashed border-border-subtle bg-surface-subtle/40 p-6 text-center sm:col-span-2">
+                            <p className="text-sm text-text-muted">
+                              No technical skills added yet.
                             </p>
-                          </article>
-                        ))}
+                          </div>
+                        )}
                       </div>
                     </section>
                     <section>
                       <h3 className="mb-3 font-semibold">What I bring</h3>
                       <div className="grid gap-3 sm:grid-cols-2">
-                        {[
-                          "Product-minded engineering",
-                          "Accessible UI development",
-                          "API & database design",
-                          "Performance optimization",
-                        ].map((item) => (
-                          <div
-                            key={item}
-                            className="flex items-center gap-2 text-sm text-text-muted"
-                          >
-                            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
-                            {item}
+                        {user.core_competencies?.length ? (
+                          user.core_competencies.map((item) => (
+                            <div
+                              key={item}
+                              className="flex items-center gap-2 text-sm text-text-muted"
+                            >
+                              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                              {item}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="rounded-xl border border-dashed border-border-subtle bg-surface-subtle/40 p-6 text-center sm:col-span-2">
+                            <p className="text-sm text-text-muted">
+                              No core competencies added yet.
+                            </p>
                           </div>
-                        ))}
+                        )}
                       </div>
                     </section>
                     <section className="rounded-xl border border-border-subtle bg-surface-elevated p-4">
-                      <p className="text-sm leading-6 text-text-muted">
-                        Currently interested in product teams building useful
-                        tools for people. I enjoy owning features end-to-end and
-                        collaborating closely with design and engineering.
-                      </p>
+                      {user.bio ? (
+                        <p className="text-sm leading-6 text-text-muted">
+                          {user.bio}
+                        </p>
+                      ) : (
+                        <p className="text-sm text-text-muted">
+                          No profile bio added yet.
+                        </p>
+                      )}
                     </section>
                   </div>
                 )}
 
                 {activeTab === "Featured projects" && (
                   <div className="space-y-4">
-                    {projects.map((project) => (
-                      <article
-                        key={project.title}
-                        className="group rounded-xl border border-border-subtle bg-surface-elevated p-4 transition hover:border-text-muted/40"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <p className="text-xs text-text-muted">
-                              {project.tech_stack}
-                            </p>
-                            <h3 className="mt-1 font-semibold">
-                              {project.title}
-                            </h3>
+                    {projects.length > 0 ? (
+                      projects.map((project) => (
+                        <article
+                          key={project.title}
+                          className="group rounded-xl border border-border-subtle bg-surface-elevated p-4 transition hover:border-text-muted/40"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <p className="text-xs text-text-muted">
+                                {project.tech_stack}
+                              </p>
+                              <h3 className="mt-1 font-semibold">
+                                {project.title}
+                              </h3>
+                            </div>
+                            {project.live ? (
+                              <a
+                                href={project.live}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={`Open ${project.title}`}
+                              >
+                                <ExternalLink className="h-4 w-4 text-text-muted transition group-hover:text-text-primary" />
+                              </a>
+                            ) : null}
                           </div>
-                          <a href={project.live} target="_blank">
-                            <ExternalLink className="h-4 w-4 text-text-muted transition group-hover:text-text-primary" />
-                          </a>
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-text-muted">
-                          {project.description}
+                          <p className="mt-3 text-sm leading-6 text-text-muted">
+                            {project.description}
+                          </p>
+                        </article>
+                      ))
+                    ) : (
+                      <div className="rounded-xl border border-dashed border-border-subtle bg-surface-subtle/40 p-6 text-center">
+                        <p className="text-sm text-text-muted">
+                          No featured projects yet.
                         </p>
-                      </article>
-                    ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {activeTab === "Work history" && (
                   <div className="space-y-6">
-                    {jobs.map((job) => (
-                      <article
-                        key={job.company_name}
-                        className="relative border-l border-border-subtle pl-5"
-                      >
-                        <span className="absolute -left-1.25 top-1 h-2.5 w-2.5 rounded-full border-2 border-surface-subtle bg-text-muted" />
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div>
-                            <h3 className="font-semibold">{job.role}</h3>
-                            <p className="mt-1 flex items-center gap-1.5 text-sm text-text-muted">
-                              <BriefcaseBusiness className="h-3.5 w-3.5" />
-                              {job.company_name}
-                            </p>
+                    {jobs.length > 0 ? (
+                      jobs.map((job) => (
+                        <article
+                          key={job.company_name}
+                          className="relative border-l border-border-subtle pl-5"
+                        >
+                          <span className="absolute -left-1.25 top-1 h-2.5 w-2.5 rounded-full border-2 border-surface-subtle bg-text-muted" />
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                              <h3 className="font-semibold">{job.role}</h3>
+                              <p className="mt-1 flex items-center gap-1.5 text-sm text-text-muted">
+                                <BriefcaseBusiness className="h-3.5 w-3.5" />
+                                {job.company_name}
+                              </p>
+                            </div>
+                            <span className="text-xs text-text-muted">
+                              {job.start_year} -{" "}
+                              {job.end_year == 0 ? "Present" : job.end_year}
+                            </span>
                           </div>
-                          <span className="text-xs text-text-muted">
-                            {job.start_year} -{" "}
-                            {job.end_year == 0 ? "Present" : job.end_year}
-                          </span>
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-text-muted">
-                          {job?.description || ""}
-                        </p>
-                      </article>
-                    ))}
+                          <p className="mt-3 text-sm leading-6 text-text-muted">
+                            {job?.description || ""}
+                          </p>
+                        </article>
+                      ))
+                    ) : (
+                      <div className="rounded-xl border border-dashed border-border-subtle bg-surface-subtle/40 p-6 text-center">
+                        <p className="text-sm text-text-muted">No jobs yet.</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

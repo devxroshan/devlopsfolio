@@ -11,12 +11,7 @@ export const api = axios.create({
 
 api.interceptors.response.use(
   (res) => {
-    const body = res.data;
-    const success: APISuccess = {
-      ok: true,
-      msg: body?.msg ?? body?.message ?? "Success",
-      data: body?.data ?? body,
-    };
+    const success = res.data;
     return success as any;
   },
 
@@ -42,7 +37,7 @@ api.interceptors.response.use(
     };
 
     if (process.env.NODE_ENV === "development") {
-      console.error("API Error:", apiError);
+      console.log("API Error:", apiError);
     }
 
     return Promise.reject(apiError);
