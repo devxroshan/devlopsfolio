@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Code2,
   ExternalLink,
+  Mail,
   MapPin,
   X,
 } from "lucide-react";
@@ -125,12 +126,13 @@ const ProfilePreviw = ({
                 />
                 <div className="flex items-center justify-center gap-4 pt-2">
                   <a
-                    href={`mailto:${user.email}`}
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${user.email}`}
+                    target="_blank"
                     aria-label={`Email ${user.name}`}
                     className="text-text-muted transition hover:text-text-primary"
                   >
                     <span className="sr-only">Email</span>
-                    <ExternalLink className="h-4 w-4" />
+                    <Mail className="h-4 w-4" />
                   </a>
                   {/* <a
                     href="#github"
