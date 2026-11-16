@@ -18,7 +18,7 @@ export const developerProfileSchema = z.object({
       z
         .string()
         .min(1)
-        .max(100, "Each compentency cannot exceeds 100 characters."),
+        .max(100, "Each competency cannot exceeds 100 characters."),
     )
-    .min(1, "Core compentency is required."),
+    .min(1, "Core competency is required."),
 });
