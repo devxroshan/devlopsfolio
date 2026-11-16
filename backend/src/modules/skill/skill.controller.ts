@@ -32,6 +32,7 @@ const getAllSkill = async (handler: RequestHandlerParams) => {
     return {
       ok: true,
       msg: "No skills yet.",
+      data: [],
     };
   }
 

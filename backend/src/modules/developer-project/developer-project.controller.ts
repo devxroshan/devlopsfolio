@@ -38,6 +38,7 @@ const getAllProject = async (handler: RequestHandlerParams) => {
     return {
       ok: true,
       msg: "No projects yet.",
+      data: [],
     };
   }
 
@@ -60,6 +61,7 @@ const getProject = async (handler: RequestHandlerParams) => {
     return {
       ok: false,
       msg: "Project not found.",
+      data: {},
     };
   }
 
