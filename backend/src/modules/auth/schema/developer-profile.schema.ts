@@ -9,6 +9,7 @@ export const developerProfileSchema = z.object({
   location: z.string(),
   title: z.string(),
   discipline: z.string(),
+  social_links: z.array(z.string()),
   bio: z
     .string()
     .min(1, "Bio is required")
