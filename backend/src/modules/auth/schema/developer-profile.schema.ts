@@ -9,4 +9,16 @@ export const developerProfileSchema = z.object({
   location: z.string(),
   title: z.string(),
   discipline: z.string(),
+  bio: z
+    .string()
+    .min(1, "Bio is required")
+    .max(700, "Bio cannot exceeds 700 characters."),
+  core_competencies: z
+    .array(
+      z
+        .string()
+        .min(1)
+        .max(100, "Each compentency cannot exceeds 100 characters."),
+    )
+    .min(1, "Core compentency is required."),
 });

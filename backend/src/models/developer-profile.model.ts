@@ -14,6 +14,7 @@ export interface IDeveloperProfile {
   title: string;
   discipline: string;
   bio: string;
+  core_competencies: string[];
 }
 
 export interface IDeveloperProfileSchema extends IDeveloperProfile, Document {
@@ -34,8 +35,21 @@ const developerProfileSchema = new Schema<IDeveloperProfileSchema>(
     location: { type: String, required: true },
     title: { type: String, required: true },
     discipline: { type: String, required: true },
-    bio: { type: String, default: "" },
+    bio: {
+      type: String,
+      required: true,
+      maxLength: [700, "Bio cannot exceed 700 characters."],
+    },
     rating: { type: Number, default: 0 },
+    core_competencies: {
+      type: [
+        {
+          type: String,
+          trim: true,
+          maxLength: [100, "Each competency cannot exceed 100 characters."],
+        },
+      ],
+    },
   },
   { timestamps: true },
 );
