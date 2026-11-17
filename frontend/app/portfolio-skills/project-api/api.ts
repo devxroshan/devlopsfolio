@@ -13,18 +13,18 @@ import {
 export const AddProjectAPI = async (data: AddProjectSchema) => {
   await schemaValidator(addProjectSchema, data);
   return await api.post<APISuccess, APISuccess, AddProjectSchema>(
-    "/developer-project",
+    "/dev-project",
     data,
   );
 };
 
 export const GetAllProjectAPI = async () => {
-  return await api.get<APISuccess, APISuccess>("/developer-project/all");
+  return await api.get<APISuccess, APISuccess>("/dev-project/all");
 };
 
 export const DeleteProjectAPI = async (data: DeleteProjectSchema) => {
   await schemaValidator(deleteProjectSchema, data);
   return await api.delete<APISuccess, APISuccess, DeleteProjectSchema>(
-    `/developer-project?project_id=${data.project_id}`,
+    `/dev-project?project_id=${data.project_id}`,
   );
 };
