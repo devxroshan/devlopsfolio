@@ -32,7 +32,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistMono.variable} ${geistSans.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className={`min-h-full flex flex-col ${inter.className}`}>
+      <body
+        className={`min-h-full flex flex-col ${inter.className} select-none`}
+      >
         <QueryProvider>
           <GetDetails>{children}</GetDetails>
         </QueryProvider>
