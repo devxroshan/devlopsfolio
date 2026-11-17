@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { InternalServerException } from "../config/http-exceptions.js";
 
 interface HandlerResponse {
-  ok: boolean;
+  ok?: boolean;
   msg: string;
   data?: any;
   statusCode?: number;
@@ -44,7 +44,7 @@ export const asyncRequestHandler = (
         if (res.headersSent) return;
         else if (response !== undefined) {
           res.status(response.statusCode || 200).json({
-            ok: response.ok,
+            ok: response.ok ?? true,
             msg: response.msg,
             data: response.data,
           });

@@ -11,6 +11,7 @@ import developerProjectRoutes from "./modules/developer-project/developer-projec
 import skillRoutes from "./modules/skill/skill.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import workedInCompanyRoutes from "./modules/worked-in-company/worked-in-company.routes.js";
+import developerProfileRoutes from "./modules/developer-profile/developer-profile.routes.js";
 
 // Filters
 import { allExceptionFilter } from "./filters/all-exceptions.filter.js";
@@ -42,7 +43,7 @@ const startServer = async () => {
   // Routes
   app.use("/api/v1/auth", authRoutes);
   app.use(
-    "/api/v1/developer-project",
+    "/api/v1/dev-project",
     isAuthenticated,
     isAuthorized({ for_client: false }),
     developerProjectRoutes,
@@ -60,6 +61,12 @@ const startServer = async () => {
     workedInCompanyRoutes,
   );
   app.use("/api/v1/user", isAuthenticated, userRoutes);
+  app.use(
+    "/api/v1/dev-profile",
+    isAuthenticated,
+    isAuthorized({ for_client: false }),
+    developerProfileRoutes,
+  );
 
   // dev case
   app.get("/", (req: express.Request, res: express.Response) => {
