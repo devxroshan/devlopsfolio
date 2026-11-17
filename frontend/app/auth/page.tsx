@@ -153,6 +153,7 @@ const developerDefaults = {
   hourly_rate_rupees: 0,
   bio: "",
   core_competencies: [],
+  social_links: [],
 };
 
 export const availabilityOptions = [

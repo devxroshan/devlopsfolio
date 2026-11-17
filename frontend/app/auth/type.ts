@@ -19,4 +19,5 @@ export type Developer = {
   bio: string;
   hourly_rate_rupees: number;
   core_competencies: string[];
+  social_links: string[];
 };

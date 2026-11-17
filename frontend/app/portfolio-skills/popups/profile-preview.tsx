@@ -98,9 +98,23 @@ const ProfilePreviw = ({
                 </div>
               </div>
 
-              <p className="text-sm leading-6 text-text-muted">
-                {user.bio || ""}
-              </p>
+              {user.core_competencies?.length ? (
+                <div className="mt-2">
+                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.14em] text-text-muted">
+                    Core strengths
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {user.core_competencies.slice(0, 4).map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-border-subtle bg-surface-hover px-2.5 py-1 text-xs text-text-muted"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
 
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-md bg-surface-hover px-2.5 py-1.5 text-xs text-text-muted">
@@ -109,13 +123,22 @@ const ProfilePreviw = ({
                 <span className="rounded-md bg-surface-hover px-2.5 py-1.5 text-xs text-text-muted">
                   Open to work
                 </span>
-                {user.hourly_rate_rupees !== undefined &&
-                  user.hourly_rate_rupees !== null && (
-                    <span className="rounded-md bg-surface-hover px-2.5 py-1.5 text-xs text-text-muted">
-                      ₹{Number(user.hourly_rate_rupees).toLocaleString()}/hr
-                    </span>
-                  )}
               </div>
+
+              {user.hourly_rate_rupees !== undefined &&
+                user.hourly_rate_rupees !== null && (
+                  <div className="rounded-xl border border-border-subtle bg-surface-hover px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                      Hourly rate
+                    </p>
+                    <p className="mt-1 text-2xl font-semibold tracking-tight text-text-primary">
+                      ₹{Number(user.hourly_rate_rupees).toLocaleString()}
+                      <span className="ml-1 text-sm font-medium text-text-muted">
+                        /hr
+                      </span>
+                    </p>
+                  </div>
+                )}
 
               <div className="mt-auto space-y-2 border-t border-border-subtle pt-5">
                 <Button variant="primary" btnText="Send Proposal" />

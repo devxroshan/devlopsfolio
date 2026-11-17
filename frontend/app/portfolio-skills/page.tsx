@@ -19,6 +19,10 @@ import {
   FileStack,
   Plus,
   WorkflowIcon,
+  Globe,
+  X,
+  Edit,
+  Trash2,
 } from "lucide-react";
 import { Developer, User } from "../auth/type";
 import { EAvailability } from "../auth/enums";
@@ -50,10 +54,20 @@ import {
 } from "./mutations/role.mutation";
 
 import ProfilePreview from "./popups/profile-preview";
+import SocialCard from "./components/social-card";
+
+let dummySocialLinks = [
+  "https://github.com/",
+  "https://www.linkedin.com/",
+  "https://x.com/",
+];
 
 const PortfolioAndSkills = () => {
   type UserProfile = Omit<User, "password"> & {
-    developer_profile: Developer & { user_id: string; _id: string };
+    developer_profile: Developer & {
+      user_id: string;
+      _id: string;
+    };
   };
 
   const queryClient = useQueryClient();
@@ -80,6 +94,7 @@ const PortfolioAndSkills = () => {
   const [isAddRole, setIsAddRole] = useState<boolean>(false);
   const [isSaveable, setIsSaveable] = useState<boolean>(false);
   const [isPreview, setIsPreview] = useState<boolean>(false);
+  const [newSocialLink, setNewSocialLink] = useState<string>("");
 
   // Project Mutations
   const addProject = useAddProjectMutation((data) => {
@@ -144,7 +159,7 @@ const PortfolioAndSkills = () => {
       roleStre.setRoles(roleQuery.data.data);
     }
     if (userStre) {
-      setUserProfileInfo(userStre);
+      setUserProfileInfo(userStre as UserProfile);
     }
   }, [skillQuery.data, projectQuery.data, roleQuery.data]);
 
@@ -155,6 +170,21 @@ const PortfolioAndSkills = () => {
 
     setIsSaveable(hasProfileChanges);
   }, [userProfileInfo, userStre]);
+
+  const handleAddSocialLink = () => {
+    let link = "";
+    if (!newSocialLink.startsWith("https://")) {
+      link = "https://" + newSocialLink;
+    }
+    setUserProfileInfo((prev) => ({
+      ...prev,
+      developer_profile: {
+        ...prev.developer_profile,
+        social_links: [...prev.developer_profile.social_links, link],
+      },
+    }));
+    setNewSocialLink("");
+  };
 
   return (
     <>
@@ -338,6 +368,55 @@ const PortfolioAndSkills = () => {
                 }
               />
             </div>
+
+            <div className="w-full rounded-lg border border-border-subtle bg-surface-elevated p-3 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Social links</span>
+                <span className="text-xs text-text-dimmed">
+                  Add or edit your professional profiles
+                </span>
+              </div>
+
+              <div className="flex gap-2 flex-wrap">
+                {true ? (
+                  [
+                    "https://github.com/devxroshan",
+                    "https://instagram.com/self.roshan",
+                    "https://instagram.com/self.roshan",
+                    "https://instagram.com/self.roshan",
+                  ].map((link, index) => {
+                    return <SocialCard key={index} link={link} />;
+                  })
+                ) : (
+                  <div className="w-full rounded-lg border border-dashed border-border-subtle bg-surface-base p-3 text-sm text-text-dimmed text-center">
+                    No social links added yet.
+                  </div>
+                )}
+              </div>
+
+              <div
+                className="flex items-end justify-center gap-3 h-fit w-full"
+                onKeyDown={(e) => {
+                  e.key == "Enter" && handleAddSocialLink();
+                }}
+              >
+                <Input
+                  variant="primary"
+                  label="Profile URL"
+                  hint="https://"
+                  value={newSocialLink}
+                  onChange={(e) => setNewSocialLink(e.target.value)}
+                />
+                <Button
+                  variant="primary"
+                  btnText="Add Link"
+                  size="xs"
+                  leadingIcon={Plus}
+                  isDisabled={!newSocialLink.trim()}
+                  onClick={() => handleAddSocialLink()}
+                />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -367,8 +446,9 @@ const PortfolioAndSkills = () => {
           </div>
 
           {!skillStre.skills.length && (
-            <div className="text-sm text-text-muted py-6 flex flex-col items-center justify-center gap-2 w-full">
-              No skills yet.
+            <div className="w-full rounded-lg border border-dashed border-border-subtle bg-surface-base p-4 text-sm text-text-dimmed text-center">
+              No skills added yet. Add your first skill to showcase your
+              expertise.
             </div>
           )}
 
@@ -474,15 +554,21 @@ const PortfolioAndSkills = () => {
               ))}
 
             {!projectStre.projects.length && (
-              <div className="text-sm text-text-muted py-6 flex flex-col items-center justify-center gap-2">
-                No projects yet.
-                <Button
-                  variant="primary"
-                  btnText="Add Project"
-                  size="xs"
-                  className="rounded-md"
-                  onClick={() => setIsAddProject(true)}
-                />
+              <div className="w-full rounded-lg border border-dashed border-border-subtle bg-surface-base p-4 text-sm text-text-dimmed text-center">
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <span>
+                    No projects added yet. Add your first project to showcase
+                    your work.
+                  </span>
+                  <Button
+                    variant="primary"
+                    btnText="Add Project"
+                    size="xs"
+                    className="rounded-md"
+                    onClick={() => setIsAddProject(true)}
+                    fullWidth={false}
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -678,15 +764,21 @@ const PortfolioAndSkills = () => {
               ))}
 
             {!roleStre.roles.length && (
-              <div className="text-sm text-text-muted py-6 flex flex-col items-center justify-center gap-2">
-                No roles yet.
-                <Button
-                  variant="primary"
-                  btnText="Add Role"
-                  size="xs"
-                  className="rounded-md"
-                  onClick={() => setIsAddRole(true)}
-                />
+              <div className="w-full rounded-lg border border-dashed border-border-subtle bg-surface-base p-4 text-sm text-text-dimmed text-center">
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <span>
+                    No roles added yet. Add your first role to highlight your
+                    work experience.
+                  </span>
+                  <Button
+                    variant="primary"
+                    btnText="Add Role"
+                    size="xs"
+                    className="rounded-md"
+                    onClick={() => setIsAddRole(true)}
+                    fullWidth={false}
+                  />
+                </div>
               </div>
             )}
           </div>

@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import type { Developer, User } from "../auth/type";
 
-type DeveloperProfile = Developer & {
+type DeveloperProfile = Partial<Developer> & {
   user_id: string;
   _id: string;
 };
@@ -25,7 +25,11 @@ export const useUserStore = create<State & Action>((set) => ({
   is_email_verified: false,
   company: "",
   profile_pic: "",
-  developer_profile: {} as DeveloperProfile,
+  developer_profile: {
+    user_id: "",
+    _id: "",
+    social_links: [],
+  },
   createdAt: "",
   updatedAt: "",
   setUser: (user) => set(() => ({ ...user })),
