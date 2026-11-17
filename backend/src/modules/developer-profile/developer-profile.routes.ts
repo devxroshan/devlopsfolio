@@ -12,11 +12,19 @@ import { deleteLinkSchema } from "./schema/delete-link.schema.js";
 
 const router = express.Router();
 
-router.post("/", schemaValidator({ body: addLinkSchema }), AddSocialLink);
-router.patch("/", schemaValidator({ body: editLinkSchema }), EditSocialLink);
-router.get("/", GetAllSocialLink);
+router.post(
+  "/social-link",
+  schemaValidator({ body: addLinkSchema }),
+  AddSocialLink,
+);
+router.patch(
+  "/social-link",
+  schemaValidator({ body: editLinkSchema }),
+  EditSocialLink,
+);
+router.get("/social-link", GetAllSocialLink);
 router.delete(
-  "/",
+  "/social-link",
   schemaValidator({ query: deleteLinkSchema }),
   DeleteSocialLink,
 );
